@@ -52,7 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, newUser, "User Registered Successfully"));
 });
 
-const LoginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     throw new ApiError(400, "All fields must required");
@@ -88,4 +88,4 @@ const LoginUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, loggedinUser, "User Login Succesfull"));
 });
 
-export { registerUser, LoginUser };
+export { registerUser, loginUser };
