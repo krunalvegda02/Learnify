@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { useDispatch } from "react-redux";
-
-const dispatch = useDispatch();
+import { LoginUser } from "../authSlice";
 const USER_API = "http://localhost:3000/api/v1/user/";
 
 export const authApi = createApi({
@@ -28,7 +26,7 @@ export const authApi = createApi({
       async onQueryStarted(args, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
-          dispatch(loginUser({ user: result.data.user }));
+          dispatch(LoginUser({ user: result.data.user }));
         } catch (error) {
           console.log(error);
         }

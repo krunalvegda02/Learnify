@@ -10,7 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+import {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from "@/Redux/Features/Api/authApi";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const Authentication = () => {
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
@@ -20,6 +26,25 @@ const Authentication = () => {
     password: "",
   });
 
+  const [
+    registerUser,
+    {
+      data: registerData,
+      error: registerError,
+      isLoading: registerIsLoading,
+      isSuccess: registerIsSuccess,
+    },
+  ] = useRegisterUserMutation();
+  const [
+    loginUser,
+    {
+      data: loginData,
+      error: loginError,
+      isLoading: loginIsLoading,
+      isSuccess: loginIsSuccess,
+    },
+  ] = useLoginUserMutation();
+
   const resetForms = () => {
     setLoginInput({ password: "", email: "" });
     setSignupInput({ username: "", password: "", email: "" });
@@ -27,9 +52,6 @@ const Authentication = () => {
 
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
-    // console.log("e.target", e.target);
-
-    // [] is not associated to array..in this context they are taking value of name otherwise name will literally kept name as a value
     if (type === "signup") {
       setSignupInput({ ...signupInput, [name]: value });
     } else {
@@ -37,11 +59,51 @@ const Authentication = () => {
     }
   };
 
-  const handleRegistration = (type) => {
+  const handleRegistration = async (type) => {
     const inputdata = type === "signup" ? signupInput : loginInput;
-    console.log("inputdata", inputdata);
+    const action = type === "signup" ? registerUser : loginUser;
+
+    // Avoid submitting empty fields
+    if (
+      !inputdata.email ||
+      !inputdata.password ||
+      (type === "signup" && !inputdata.username)
+    ) {
+      alert("Please fill all the fields.");
+      return;
+    }
+
+    try {
+      await action(inputdata);
+    } catch (err) {
+      console.error("Error occurred:", err);
+    }
   };
 
+  useEffect(() => {
+    if (registerIsSuccess && registerData) {
+      toast.success(registerData.message || "Signup Successfull");
+    }
+
+    if (loginIsSuccess && loginData) {
+      toast.success(loginData.message || "Login Successfull");
+    }
+
+    if (registerError) {
+      toast.error(registerError?.message || "register Failed");
+    }
+
+    if (loginError) {
+      toast.error(loginError?.message || "login Failed");
+    }
+  }, [
+    loginIsLoading,
+    registerIsLoading,
+    loginData,
+    registerData,
+    loginError,
+    registerError,
+  ]);
   return (
     <div className="flex justify-center mt-20">
       <Tabs
@@ -91,7 +153,19 @@ const Authentication = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleRegistration("login")}>Login</Button>
+              <Button
+                disabled={loginIsLoading}
+                onClick={() => handleRegistration("login")}
+              >
+                {loginIsLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Please Wait
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </Button>
             </CardFooter>
           </Card>
         </TabsContent>
@@ -106,7 +180,7 @@ const Authentication = () => {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="space-y-1">
-                <Label htmlFor="username">username</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
                   name="username"
                   value={signupInput.username}
@@ -146,8 +220,18 @@ const Authentication = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={() => handleRegistration("signup")}>
-                Sign Up
+              <Button
+                disabled={registerIsLoading}
+                onClick={() => handleRegistration("signup")}
+              >
+                {registerIsLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Please Wait
+                  </>
+                ) : (
+                  "Sign Up"
+                )}
               </Button>
             </CardFooter>
           </Card>
