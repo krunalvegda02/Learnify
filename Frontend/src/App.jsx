@@ -1,6 +1,7 @@
 import { RouterProvider } from "react-router-dom";
 import { createBrowserRouter } from "react-router-dom";
 import Hero from "./Pages/Student/Hero";
+import Courses from "./Pages/Student/Courses";
 import MainLayout from "./Layout/MainLayout";
 import Authentication from "./Pages/Authentication";
 
@@ -15,7 +16,7 @@ function App() {
           element: (
             <>
               <Hero />
-              {/* <Courses/> */}
+              <Courses/>
             </>
           ),
         },
