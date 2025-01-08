@@ -16,7 +16,8 @@ function Hero() {
         <form className="flex items-center bg-white  border-none  text-black dark:text-gray-100 rounded-full shadow-lg max-w-xl overflow-hidden  mx-auto mb-6">
           <Input
             type="text"
-            className=" flex-grow focus-visible:ring-0  rounded-l-full  px-6 py-3 placeholder:bg-gray-400  dark:placeholder-gray-500"
+            className=" flex-grow focus-visible:ring-0  rounded-l-full  px-6 py-3 placeholder-gray-400  dark:placeholder-gray-500"
+            placeholder="Search Courses..."
           ></Input>
           <Button className="bg-blue-600 dark:bg-blue-700 text-white px-6 py-3 rounded-r-full hover:bg-blue-700 dark:hover:bg-blue-800 ">
             Search
