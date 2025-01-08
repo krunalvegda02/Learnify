@@ -6,11 +6,11 @@ import { User } from "../models/user.model.js";
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
-    // console.log("refreshToken", refreshToken);
+    console.log("refreshToken", refreshToken);
     await user.save({ validateBeforeSave: false }); //savind refreshtoken into database
 
     return { accessToken, refreshToken };
@@ -71,6 +71,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
     user._id
   );
+  console.log("acees", accessToken);
 
   const loggedinUser = await User.findById(user._id).select(
     "-password -refreshToken"
@@ -83,9 +84,54 @@ const loginUser = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .cookie("accesstToken", accessToken, options)
+    .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, loggedinUser, `Welcome Back, ${loggedinUser.username}`));
+    .json(
+      new ApiResponse(
+        200,
+        loggedinUser,
+        `Welcome Back, ${loggedinUser.username}`
+      )
+    );
 });
 
-export { registerUser, loginUser };
+const logOutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  //delete secure coookies
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User Logout seccessfully"));
+});
+
+const getUserProfile = asyncHandler(async (req, res) => {
+  const userid = req.user._id;
+
+  const user = await User.findById(userid).select("-password -refreshToken");
+  if (!user) {
+    throw new ApiError(401, "User Not Found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, user, "User Profile Fetched"));
+});
+
+export { registerUser, loginUser, logOutUser, getUserProfile };
