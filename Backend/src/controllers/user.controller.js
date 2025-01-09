@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
+import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
@@ -137,14 +138,34 @@ const getUserProfile = asyncHandler(async (req, res) => {
 const updateProfile = asyncHandler(async (req, res) => {
   const userid = req.user._id;
   const { username } = req.body;
-  const { avatar } = req.file;
+  const avatarFile = req.file;
+  // console.log("avatar", req.file);
 
   const user = await User.findById(userid);
   if (!user) {
     throw new ApiError(401, "User not Found");
   }
 
+  // Extract the public Id of the olf image from URL if it is exists
+  if (user.avatar) {
+    const publicId = user.avatar.split("/").pop().split(".")[0];
+    deleteMediaFromCloudinary(publicId);
+  }
+
+  // Upload new photo
+  const cloudinaryResponse = await uploadMedia(avatarFile.path);
+  const avatar = cloudinaryResponse.secure_url;
+
   const updatedData = { username, avatar };
+  const updatedUser = await User.findByIdAndUpdate(userid, updatedData, {
+    new: true,
+  }).select("-password -refreshToken");
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedUser, "User Profile Updated Successfully")
+    );
 });
 
-export { registerUser, loginUser, logOutUser, getUserProfile };
+export { registerUser, loginUser, logOutUser, getUserProfile, updateProfile };

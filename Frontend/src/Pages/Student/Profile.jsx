@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,17 +14,53 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BookOpen, Loader2 } from "lucide-react";
 import Course from "./Course";
-import { useLoadUserQuery } from "@/Redux/Features/Api/authApi";
+import {
+  useLoadUserQuery,
+  useUpdateUserMutation,
+} from "@/Redux/Features/Api/authApi";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 function Profile() {
-  // const enrolledCourses = [1,2,2,2,2,2,]
-
   //! we use [] for mutation and {} for query
-  const { data, isLoading } = useLoadUserQuery();
-  console.log("data", data);
+  // Profile Fetch PArt
+  const { data, isLoading, refetch } = useLoadUserQuery();
   const user = data?.data || {};
-  console.log("isLoad", user);
+
+  const [
+    updateUser,
+    { data: updateUserData, isLoading: formLoading, error, isSuccess, isError },
+  ] = useUpdateUserMutation();
+
+  // Update profile
+  const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState("");
+  // console.log(avatar, username);
+
+  const onChangeHandler = (e) => {
+    const file = e.target.files?.[0];
+    if (file) setAvatar(file);
+  };
+
+  const updateUserHandler = async () => {
+    console.log("username", username, "avatar", avatar);
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("avatarFile", avatar);
+
+    await updateUser(formData);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      toast.success(updateUserData.message || "Profile Updated Successfully");
+    }
+
+    if (isError) {
+      toast.error(error.message);
+    }
+  }, [error, updateUserData, isError, isSuccess]);
 
   return (
     <div className="my-24 max-w-5xl  mx-auto px-4">
@@ -87,20 +123,29 @@ function Profile() {
                     <div className="grid gap-4 py-4 px-3">
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-left">Username</Label>
-                        <Input placeholder="Username" className="col-span-3" />
+                        <Input
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder="Username"
+                          className="col-span-3"
+                        />
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-left">Avatar</Label>
                         <Input
                           type="file"
                           accept="image/*"
+                          onChange={onChangeHandler}
                           className="col-span-3"
                         />
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button disabled={isLoading} type="submit">
-                        {isLoading ? (
+                      <Button
+                        disabled={formLoading}
+                        type="submit"
+                        onClick={updateUserHandler}
+                      >
+                        {formLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                             <span className="text-gray-400">Please wait..</span>
