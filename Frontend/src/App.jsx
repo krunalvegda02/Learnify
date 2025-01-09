@@ -30,7 +30,6 @@ function App() {
           path: "/my-learning",
           element: <MyLearning />,
         },
-
         {
           path: "/profile",
           element: <Profile />,

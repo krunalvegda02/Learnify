@@ -173,13 +173,13 @@ function Profile() {
               <div className="text-xl mx-auto my-14 max-w-5xl flex flex-col items-center justify-center text-center ">
                 <BookOpen size={50} />
                 <h1 className="font-semibold">
-                  You haven't Enrolled in any Courses,
+                  You haven't Enrolled in any Courses, {' '}
                   <Link to="/">
                     <span className=" text-blue-600 hover:text-blue-800 hover:underline">
-                      Click here
+                      Click here {" "}
                     </span>
                   </Link>
-                  to explore Courses...
+                     to explore Courses...
                 </h1>
               </div>
             ) : (

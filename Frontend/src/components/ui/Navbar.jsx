@@ -1,5 +1,5 @@
 import { Menu, School } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import DarkMode from "@/DarkMode";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +11,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Sheet,
   SheetClose,
@@ -24,11 +33,28 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogOutUserMutation } from "@/Redux/Features/Api/authApi";
+import { toast } from "sonner";
 
 function Navbar() {
   const user = true;
   const role = "instructor";
+  const navigate = useNavigate();
+
+  const [LogOutUser, { data, isLoading, isSuccess, isError, error }] =
+    useLogOutUserMutation();
+
+  const logOutHandler = () => {
+    LogOutUser();
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Logout  Succesfully");
+      navigate("/login");
+    }
+  }, [isSuccess]);
 
   return (
     <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800  border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
@@ -54,15 +80,42 @@ function Navbar() {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+                  {/* My Learning BUtton */}
                   <DropdownMenuItem>
                     <Link to="my-learning">My Learning</Link>
                   </DropdownMenuItem>
+
+                  {/* Edit Profile Button */}
                   <DropdownMenuItem>
                     <Link to="profile">Edit Profile </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
+
+                {/* Alert for Logout */}
+                <DropdownMenuItem asChild>
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <p className="text-red-800 text-sm ml-2">Logout</p>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you Sure, You want to Logout?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={logOutHandler}>
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </DropdownMenuItem>
+
+                {/* Dashboard button for when we are instructor*/}
                 <DropdownMenuSeparator />
                 {role === "instructor" && (
                   <DropdownMenuItem>Dashboard</DropdownMenuItem>
@@ -91,43 +144,89 @@ function Navbar() {
 export default Navbar;
 
 function MobileNavbar() {
+  const user = true;
   const role = "instructor";
+  const navigate = useNavigate();
+
+  const [LogOutUser, { data, isLoading, isSuccess, isError, error }] =
+    useLogOutUserMutation();
+
+  const logOutHandler = () => {
+    LogOutUser();
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Logout  Succesfully");
+      navigate("/login");
+    }
+  }, [isSuccess]);
 
   return (
-    <div className="flex justify-between ">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button
-            size="icon"
-            className="rounded-full bg-gray-200 hover:bg-slate-300"
-          >
-            <Menu className="text-black" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent className="flex flex-col">
-          <SheetHeader className="flex flex-row items-center justify-between mt-2">
-            <SheetTitle className="font-semibold text-2xl">
-              E-Learning
-            </SheetTitle>
-            <DarkMode />
-          </SheetHeader>
+    <>
+      {user && (
+        <div className="flex justify-between ">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                size="icon"
+                className="rounded-full bg-gray-200 hover:bg-slate-300"
+              >
+                <Menu className="text-black" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="flex flex-col">
+              <SheetHeader className="flex flex-row items-center justify-between mt-2">
+                <SheetTitle className="font-semibold text-2xl">
+                  E-Learning
+                </SheetTitle>
+                <DarkMode />
+              </SheetHeader>
 
-          <Separator className="mr-2" />
-          <nav className="flex flex-col space-y-4">
-            <span>My Learning</span>
-            <span>Edit Profile</span>
-            <span>Log out!</span>
-          </nav>
+              <Separator className="mr-2" />
+              <nav className="flex flex-col space-y-4">
+                <Link to="my-learning">
+                  <span>My Learning</span>
+                </Link>
+                <Link to="profile">
+                  <span>Edit Profile</span>
+                </Link>
 
-          {role === "instructor" && (
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Dashboard</Button>
-              </SheetClose>
-            </SheetFooter>
-          )}
-        </SheetContent>
-      </Sheet>
-    </div>
+                {/* Logout Alert modal */}
+                <AlertDialog className="rounded-full">
+                  <AlertDialogTrigger>
+                    <p className="text-red-800 text-base text-left">Logout</p>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle className="text-left">
+                        Confirm Logout
+                      </AlertDialogTitle>
+                      <AlertDialogDescription className="text-left">
+                        Are you Sure, You want to Logout?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="flex flex-row gap-2 items-end">
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={logOutHandler}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </nav>
+
+              {role === "instructor" && (
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <Button type="submit">Dashboard</Button>
+                  </SheetClose>
+                </SheetFooter>
+              )}
+            </SheetContent>
+          </Sheet>
+        </div>
+      )}
+    </>
   );
 }
