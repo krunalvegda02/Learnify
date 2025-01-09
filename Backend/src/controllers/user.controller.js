@@ -134,4 +134,17 @@ const getUserProfile = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "User Profile Fetched"));
 });
 
+const updateProfile = asyncHandler(async (req, res) => {
+  const userid = req.user._id;
+  const { username } = req.body;
+  const { avatar } = req.file;
+
+  const user = await User.findById(userid);
+  if (!user) {
+    throw new ApiError(401, "User not Found");
+  }
+
+  const updatedData = { username, avatar };
+});
+
 export { registerUser, loginUser, logOutUser, getUserProfile };

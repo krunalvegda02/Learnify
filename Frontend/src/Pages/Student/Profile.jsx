@@ -12,12 +12,19 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { BookOpen, Loader2 } from "lucide-react";
 import Course from "./Course";
+import { useLoadUserQuery } from "@/Redux/Features/Api/authApi";
+import { Link } from "react-router-dom";
 
 function Profile() {
-  const isLoading = false;
-  const enrolledCourses = [1, 2, 1];
+  // const enrolledCourses = [1,2,2,2,2,2,]
+
+  //! we use [] for mutation and {} for query
+  const { data, isLoading } = useLoadUserQuery();
+  console.log("data", data);
+  const user = data?.data || {};
+  console.log("isLoad", user);
 
   return (
     <div className="my-24 max-w-5xl  mx-auto px-4">
@@ -31,7 +38,10 @@ function Profile() {
             <div className="flex items-center flex-col">
               <Avatar className="h-24 w-24 sm:h-32 sm:w-32 mb-4">
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
+                  src={
+                    user?.avatar ||
+                    "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                  }
                   alt="@shadcn"
                 />
               </Avatar>
@@ -41,7 +51,7 @@ function Profile() {
                 <h1 className="font-semibold text-xl text-gray-900 dark:text-gray-300 ml-2">
                   Name:
                   <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                    Vegda Krunal D.
+                    {user.username}
                   </span>
                 </h1>
               </div>
@@ -49,7 +59,7 @@ function Profile() {
                 <h1 className="font-semibold text-xl text-gray-900 dark:text-gray-300 ml-2">
                   Email:
                   <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                    Krunavegda@gmail.com
+                    {user.email}
                   </span>
                 </h1>
               </div>
@@ -57,7 +67,7 @@ function Profile() {
                 <h1 className="font-semibold text-xl text-gray-900 dark:text-gray-300 ml-2">
                   Role:
                   <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                    Instructor
+                    {user.role.toUpperCase()}
                   </span>
                 </h1>
               </div>
@@ -93,10 +103,7 @@ function Profile() {
                         {isLoading ? (
                           <>
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            <span className="text-gray-400">
-                              {" "}
-                              Please wait..
-                            </span>
+                            <span className="text-gray-400">Please wait..</span>
                           </>
                         ) : (
                           "Save Changes"
@@ -111,18 +118,33 @@ function Profile() {
         )}
       </div>
 
-      <h1 className="font-medium text-lg">Courses You're enrolled in</h1>
+      <h1 className="font-medium text-lg">Courses You're Enrolled in</h1>
       <div className="my-5">
         {isLoading ? (
           <CoursesSkeleton />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-            {enrolledCourses.length === 0 ? (
-              <h1>Your havn't enrolled yet</h1>
+          <>
+            {user.enrolledCourses.length === 0 ? (
+              <div className="text-xl mx-auto my-14 max-w-5xl flex flex-col items-center justify-center text-center ">
+                <BookOpen size={50} />
+                <h1 className="font-semibold">
+                  You haven't Enrolled in any Courses,
+                  <Link to="/">
+                    <span className=" text-blue-600 hover:text-blue-800 hover:underline">
+                      Click here
+                    </span>
+                  </Link>
+                  to explore Courses...
+                </h1>
+              </div>
             ) : (
-              enrolledCourses.map((course, index) => <Course key={index} />)
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+                {user.enrolledCourses.map((course, index) => (
+                  <Course course={course} key={course._id} />
+                ))}
+              </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

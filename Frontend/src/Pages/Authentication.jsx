@@ -28,6 +28,8 @@ const Authentication = () => {
     password: "",
   });
 
+
+  //! we use [] for mutation and {} for query
   const [
     registerUser,
     {
