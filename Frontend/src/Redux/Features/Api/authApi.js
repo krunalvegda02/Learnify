@@ -60,6 +60,15 @@ export const authApi = createApi({
         url: "logout",
         method: "POST",
       }),
+      async onQueryStarted(args, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(LogoutUser());
+          // console.log("result", result.data.data);
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
   }),
 });

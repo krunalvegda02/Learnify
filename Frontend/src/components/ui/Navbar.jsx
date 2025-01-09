@@ -36,14 +36,17 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogOutUserMutation } from "@/Redux/Features/Api/authApi";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 function Navbar() {
-  const user = true;
-  const role = "instructor";
+  const user = useSelector((state) => state.auth.isAuthenticated);
+  const role = useSelector((state) => state.auth.user?.role);
+  const avatar = useSelector((state) => state.auth.user?.avatar);
+  // console.log("avatar", avatar);
+
   const navigate = useNavigate();
 
-  const [LogOutUser, { data, isLoading, isSuccess, isError, error }] =
-    useLogOutUserMutation();
+  const [LogOutUser, { data, isSuccess }] = useLogOutUserMutation();
 
   const logOutHandler = () => {
     LogOutUser();
@@ -71,7 +74,10 @@ function Navbar() {
               <DropdownMenuTrigger asChild>
                 <Avatar>
                   <AvatarImage
-                    src="https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                    src={
+                      avatar ||
+                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
+                    }
                     alt="@shadcn"
                   />
                 </Avatar>
@@ -124,8 +130,10 @@ function Navbar() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline"> Login</Button>
-              <Button> Signup</Button>
+              <Button variant="outline" onClick={() => navigate("/login")}>
+                Login
+              </Button>
+              <Button onClick={() => navigate("/login")}> Signup</Button>
             </div>
           )}
           <DarkMode />

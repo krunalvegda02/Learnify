@@ -58,10 +58,13 @@ function Profile() {
     }
 
     if (isError) {
-      toast.error(error.message);
+      toast.error("All Fields are Required");
     }
   }, [error, updateUserData, isError, isSuccess]);
 
+  useEffect(() => {
+    refetch();
+  }, []);
   return (
     <div className="my-24 max-w-5xl  mx-auto px-4">
       <h1 className="font-bold text-2xl text-center sm:text-left ">Profile</h1>
@@ -173,13 +176,13 @@ function Profile() {
               <div className="text-xl mx-auto my-14 max-w-5xl flex flex-col items-center justify-center text-center ">
                 <BookOpen size={50} />
                 <h1 className="font-semibold">
-                  You haven't Enrolled in any Courses, {' '}
+                  You haven't Enrolled in any Courses,{" "}
                   <Link to="/">
                     <span className=" text-blue-600 hover:text-blue-800 hover:underline">
-                      Click here {" "}
+                      Click here{" "}
                     </span>
                   </Link>
-                     to explore Courses...
+                  to explore Courses...
                 </h1>
               </div>
             ) : (

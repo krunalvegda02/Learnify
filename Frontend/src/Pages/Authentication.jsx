@@ -28,7 +28,6 @@ const Authentication = () => {
     password: "",
   });
 
-
   //! we use [] for mutation and {} for query
   const [
     registerUser,
@@ -76,7 +75,6 @@ const Authentication = () => {
       alert("Please fill all the fields.");
       return;
     }
-
     try {
       await action(inputdata);
     } catch (err) {
@@ -86,20 +84,21 @@ const Authentication = () => {
 
   useEffect(() => {
     if (registerIsSuccess && registerData) {
-      toast.success(registerData.message || "Signup Successfull");
+      toast.success(registerData.message || "User Signup Successfull");
+
     }
 
     if (loginIsSuccess && loginData) {
-      toast.success(loginData.message || "Login Successfull");
+      toast.success(loginData.message || "User Login Successfull");
       navigate("/");
     }
 
     if (registerError) {
-      toast.error(registerError?.message || "register Failed");
+      toast.error(registerError.data.message || "User Signup Failed");
     }
 
     if (loginError) {
-      toast.error(loginError?.message || "login Failed");
+      toast.error(loginError.data.message || "User login Failed");
     }
   }, [
     loginIsLoading,
