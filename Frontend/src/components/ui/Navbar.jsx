@@ -124,7 +124,9 @@ function Navbar() {
                 {/* Dashboard button for when we are instructor*/}
                 <DropdownMenuSeparator />
                 {role === "instructor" && (
-                  <DropdownMenuItem>Dashboard</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/admin">Dashboard </Link>
+                  </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>

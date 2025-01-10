@@ -6,7 +6,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: USER_API,
-    credentials: "include",
+    // credentials: "include",
   }),
   endpoints: (builder) => ({
     //Mutation for posting data  and  Query for fetching data

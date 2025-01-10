@@ -84,21 +84,21 @@ const Authentication = () => {
 
   useEffect(() => {
     if (registerIsSuccess && registerData) {
-      toast.success(registerData.message || "User Signup Successfull");
+      toast.success(registerData?.message || "User Signup Successfull");
 
     }
 
     if (loginIsSuccess && loginData) {
-      toast.success(loginData.message || "User Login Successfull");
+      toast.success(loginData?.message || "User Login Successfull");
       navigate("/");
     }
 
     if (registerError) {
-      toast.error(registerError.data.message || "User Signup Failed");
+      toast.error(registerError?.data?.message || "User Signup Failed");
     }
 
     if (loginError) {
-      toast.error(loginError.data.message || "User login Failed");
+      toast.error(loginError?.data?.message || "User login Failed");
     }
   }, [
     loginIsLoading,
