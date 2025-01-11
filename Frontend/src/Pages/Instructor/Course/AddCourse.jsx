@@ -1,15 +1,122 @@
-import React from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import React, { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { useCreateCourseMutation } from "@/Redux/Features/Api/CourseApi";
+import { toast } from "sonner";
 
 function AddCourse() {
+  const [title, setTitle] = useState();
+  const [category, setCategory] = useState();
+
+  const navigate = useNavigate();
+
+  const getSelectedCategory = (value) => {
+    setCategory(value);
+  };
+
+  const [createCourse, { data, isLoading, error, isSuccess }] =
+    useCreateCourseMutation();
+
+  const creatCourseHandler = async () => {
+    await createCourse({ title, category });
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(data?.message || "Course Created Succesfully");
+    }
+
+    if (error) {
+      toast.error("Error Creating Course");
+    }
+  }, [isSuccess, error]);
+
   return (
-    <div className="flex-1 mx-10">
-      <div className="mg-4">
+    <div className=" mx-10">
+      <div className="my-4">
         <h1 className="font-bold text-xl">
           Lets add course, add some basic details for your new course
         </h1>
         <p className="text-sm ">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est, saepe!
         </p>
+      </div>
+      <div className="space-y-4 ">
+        <div>
+          <Label className="mb-0.5">Title</Label>
+          <Input
+            type="text"
+            placeholder="Your Course Name"
+            name="title"
+            value={title}
+            onValueChange={(e) => setTitle(e.target.value)}
+            className="mb-1"
+          />
+          <Label className="mb-0.5">Category</Label>
+          <Select onValueChange={getSelectedCategory}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select a Category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Category</SelectLabel>
+                <SelectItem value="Next js">Next js</SelectItem>
+                <SelectItem value="React js">React js</SelectItem>
+                <SelectItem value="MongoDB">MongoDB</SelectItem>
+                <SelectItem value="MySQL">MySQL</SelectItem>
+                <SelectItem value="MERN Stack Development">
+                  MERN Stack Development
+                </SelectItem>
+                <SelectItem value="Frontend Development">
+                  Frontend Development
+                </SelectItem>
+                <SelectItem value="Backend Developent">
+                  Backend Developent
+                </SelectItem>
+                <SelectItem value="Data Science">Data Science</SelectItem>
+                <SelectItem value="Web Development">Web Development</SelectItem>
+                <SelectItem value="App Development">App Development</SelectItem>
+                <SelectItem value="Machine Learning">
+                  Machine Learning
+                </SelectItem>
+                <SelectItem value="Python">Python</SelectItem>
+                <SelectItem value="Docker">Docker</SelectItem>
+                <SelectItem value="Java">Java</SelectItem>
+                <SelectItem value="C++">C++</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => {
+              navigate("/admin/course");
+            }}
+          >
+            Back
+          </Button>
+          <Button disabled={isLoading} onClick={creatCourseHandler}>
+            {isLoading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              "Create"
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

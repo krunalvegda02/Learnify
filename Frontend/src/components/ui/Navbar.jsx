@@ -93,7 +93,7 @@ function Navbar() {
 
                   {/* Edit Profile Button */}
                   <DropdownMenuItem>
-                    <Link to="profile">Edit Profile </Link>
+                    <Link to="profile">Edit Profile </Link>a
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -125,7 +125,7 @@ function Navbar() {
                 <DropdownMenuSeparator />
                 {role === "instructor" && (
                   <DropdownMenuItem>
-                    <Link to="/admin">Dashboard </Link>
+                    <Link to="/admin/dashboard">Dashboard </Link>
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
