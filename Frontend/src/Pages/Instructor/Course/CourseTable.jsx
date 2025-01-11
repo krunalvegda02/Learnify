@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,89 +9,66 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-import { Edit } from "lucide-react";
+import { useGetCreatorCourseQuery } from "@/Redux/Features/Api/CourseApi";
+import { Delete, EditIcon, Loader2, PlusIcon } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const data = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
-
 const CourseTable = () => {
   const navigate = useNavigate();
+  const { data, isLoading } = useGetCreatorCourseQuery();
+
+  if (isLoading) {
+    return <Loader2 />;
+  }
+  console.log("data", data.data);
+
   return (
     <div>
-      <Button onClick={() => navigate("create")}>Create a new course</Button>
+      <Button onClick={() => navigate("create")}>
+        <PlusIcon /> Create Course
+      </Button>
       <Table>
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableCaption>
+          <p className="text-base text-black"> Your Courses</p>
+        </TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Price</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead className="text-right">Action</TableHead>
+            <TableHead>Title </TableHead>
+            <TableHead className="w-[130px]">Status</TableHead>
+            <TableHead className="w-[130px]">Price</TableHead>
+            <TableHead className="w-[180px] text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className="text-right">
-                {invoice.totalAmount}
+          {data.data.map((course) => (
+            <TableRow key={course._id}>
+              <TableCell>
+                <p className="truncate text-base">{course.title}</p>
+              </TableCell>
+              <TableCell className="font-medium">
+                {course.price || "NA"}
+              </TableCell>
+              <TableCell>
+                {course.isPublished ? (
+                  <p className="text-green-900 bg-green-200 p-0.5 px-1.5 rounded-sm w-20 flex justify-center">
+                    Published
+                  </p>
+                ) : (
+                  <p className="text-gray-600 bg-gray-200 p-0.5 px-1.5 rounded-sm w-14 flex justify-center ">
+                    Draft
+                  </p>
+                )}
+              </TableCell>
+
+              <TableCell className="text-center">
+                <Button size="sm" variant="ghost" className="text-green-800 ">
+                  <EditIcon />
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow>
-        </TableFooter>
       </Table>
     </div>
   );

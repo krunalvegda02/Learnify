@@ -17,7 +17,7 @@ import { useCreateCourseMutation } from "@/Redux/Features/Api/CourseApi";
 import { toast } from "sonner";
 
 function AddCourse() {
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState("");
   const [category, setCategory] = useState();
 
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ function AddCourse() {
 
   const creatCourseHandler = async () => {
     await createCourse({ title, category });
+    navigate('/admin/course')
   };
 
   useEffect(() => {
@@ -61,7 +62,7 @@ function AddCourse() {
             placeholder="Your Course Name"
             name="title"
             value={title}
-            onValueChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
             className="mb-1"
           />
           <Label className="mb-0.5">Category</Label>
