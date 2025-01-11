@@ -62,7 +62,7 @@ const CourseTable = () => {
               </TableCell>
 
               <TableCell className="text-center">
-                <Button size="sm" variant="ghost" className="text-green-800 ">
+                <Button size="sm" variant="ghost" className="text-green-800 " onClick={() => navigate(`${course._id}`)}>
                   <EditIcon />
                 </Button>
               </TableCell>
