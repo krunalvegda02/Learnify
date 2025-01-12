@@ -33,4 +33,3 @@ export const deleteLectureFromCloudinary = async (publicId) => {
     console.log("Error Deleting Lecture", error);
   }
 };
-

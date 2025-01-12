@@ -103,7 +103,7 @@ function Navbar() {
                   <AlertDialog>
                     <AlertDialogTrigger className="flex my-auto mx-auto px-2 gap-36  text-red-800">
                       <p className="text-red-800 text-sm ">Logout</p>
-                      <LucideLogOut className="" size={18} /> 
+                      <LucideLogOut className="" size={18} />
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
