@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 import {
   Select,
@@ -20,40 +20,121 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useGetCourseByIdQuery,
+  useUpdateCourseMutation,
+} from "@/Redux/Features/Api/CourseApi";
+import { toast } from "sonner";
 
 function CourseTab() {
-  const navigate = useNavigate();
   const [input, setInput] = useState({
     title: "",
     price: "",
-    Subtitle: "",
+    subtitle: "",
     category: "",
     description: "",
-    courseLevel: " ",
+    courseLevel: "",
     thumbnail: "",
+    isPublished: "",
   });
 
+  const params = useParams();
+  const courseId = params.courseId;
+  const navigate = useNavigate();
+  const [previewThumbnail, setPreviewThumbnail] = useState("");
+
+  const { data: coursedata, isLoading: courseisLoading } =
+    useGetCourseByIdQuery(courseId);
+  const course = coursedata?.data;
+  // console.log("course", course);
+
+  // Use Effect for GetCourseById
+  useEffect(() => {
+    if (course) {
+      setInput({
+        title: course.title,
+        price: course.price,
+        subtitle: course.subtitle,
+        category: course.category,
+        description: course.description,
+        courseLevel: course.courseLevel,
+        thumbnail: course.thumbnail,
+        isPublished: course.isPublished,
+      });
+    }
+    // console.log("input", input);
+  }, [course]);
+
+  // for input field
   const changeEventHandler = (e) => {
     const { name, value } = e.target;
     setInput({ ...input, [name]: value });
   };
 
-  const isLoading = false;
-  const isPublish = true;
+  // for category input change
+  const SelectCategory = (value) => {
+    setInput({ ...input, category: value });
+  };
+
+  // for course Level input change
+  const SelectCouseLevel = (value) => {
+    setInput({ ...input, courseLevel: value });
+  };
+
+  // for thumbnail input file change
+  const fileChanger = (e) => {
+    // console.log("thumbnail", e.target.files);
+    const file = e.target.files?.[0];
+    if (file) {
+      setInput({ ...input, thumbnail: file });
+      const fileReader = new FileReader();
+      fileReader.onloadend = () => setPreviewThumbnail(fileReader.result);
+      fileReader.readAsDataURL(file);
+    }
+  };
+
+  const [updateCourse, { data, isLoading, isSuccess, error }] =
+    useUpdateCourseMutation();
+  // Save Button CLick
+  const updateCourseHandler = async () => {
+    const formData = new FormData();
+    formData.append("title", input.title);
+    formData.append("subtitle", input.subtitle);
+    formData.append("description", input.description);
+    formData.append("price", input.price);
+    formData.append("category", input.category);
+    formData.append("thumbnailFile", input.thumbnail); // This must be a valid file object
+    formData.append("courseLevel", input.courseLevel);
+
+    await updateCourse({ formdata: formData, courseId });
+  };
+  // Use Effect for Updating Course
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("data", data);
+
+      toast.success(data?.message || "Course Updated Succesfully");
+    }
+
+    if (error) {
+      toast.error(error || "Error Updating Course");
+      console.log("error", error);
+    }
+  }, [isSuccess, error]);
 
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <div>
-          <CardTitle>Basic Course Information</CardTitle>
+          <CardTitle className="text-xl">Basic Course Information</CardTitle>
           <CardDescription>
             Make Changes to your courses here. Click save when you are done.
           </CardDescription>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
-            {isPublish ? "Unsplished" : "Published"}
+            {input.isPublished ? "Unpublish" : "Publish"}
           </Button>
           <Button>Remove Course</Button>
         </div>
@@ -62,31 +143,35 @@ function CourseTab() {
       <CardContent>
         <div className="space-y-4 mt-5">
           <div>
-            <Label>Title</Label>
+            <Label className="mb-0.5">Title</Label>
             <Input
               type="text"
               placeholder="Title of Course"
               name="title"
+              onChange={changeEventHandler}
+              value={input.title}
             ></Input>
           </div>
 
           <div>
-            <Label>Subtitle</Label>
+            <Label className="mb-1.5">Subtitle</Label>
             <Input
+              onChange={changeEventHandler}
               type="text"
               placeholder="Subtitle of Course"
               name="subtitle"
+              value={input.subtitle}
             ></Input>
           </div>
 
           <div>
-            <Label>Description</Label>
+            <Label className="mb-2.5">Description</Label>
             <RichTextEditor input={input} setInput={setInput} />
           </div>
           <div className="flex itesm-center gap-5">
             <div>
-              <Label>Category</Label>
-              <Select>
+              <Label className="mb-1.5">Category</Label>
+              <Select onValueChange={SelectCategory} value={input.category}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a Category" />
                 </SelectTrigger>
@@ -126,8 +211,12 @@ function CourseTab() {
               </Select>
             </div>
             <div>
-              <Label>Course Level </Label>
-              <Select>
+              <Label className="mb-1.5">Course Level </Label>
+              <Select
+                required
+                onValueChange={SelectCouseLevel}
+                value={input.courseLevel}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a Course Level" />
                 </SelectTrigger>
@@ -153,8 +242,20 @@ function CourseTab() {
             </div>
           </div>
           <div>
-            <Label>Choose Thumbnail</Label>
-            <Input type="file" accept="image/*" className="w-fit"></Input>
+            <Label className="mb-0.5">Choose Thumbnail</Label>
+            <Input
+              onChange={fileChanger}
+              type="file"
+              accept="image/*"
+              className="w-fit"
+            ></Input>
+            {previewThumbnail && (
+              <img
+                src={previewThumbnail}
+                className="e-64 my-2 "
+                alt="Course Thumbnail"
+              />
+            )}
           </div>
           <div className="flex gap-2">
             <Button
@@ -165,7 +266,7 @@ function CourseTab() {
             >
               Cancel
             </Button>
-            <Button disabled={isLoading}>
+            <Button disabled={isLoading} onClick={updateCourseHandler}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please

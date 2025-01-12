@@ -10,7 +10,7 @@ const isAuthenticated = asyncHandler(async (req, res, next) => {
   }
 
   const decode = jwt.verify(usertoken, process.env.ACCESS_TOKEN_SECRET);
-  console.log("Decoded Token in middleware", decode);
+  // console.log("Decoded Token in middleware", decode);
   if (!decode) {
     throw new ApiError(401, "Invalid Access Token");
   }

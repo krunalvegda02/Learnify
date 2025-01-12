@@ -2,6 +2,7 @@ import { Course } from "../models/Course.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 const createCourse = asyncHandler(async (req, res) => {
   const { title, category } = req.body;
@@ -39,4 +40,84 @@ const getCreatorCourses = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, courses, "Instuctor Courses Fetched"));
 });
 
-export { createCourse, getCreatorCourses };
+const updateCourse = asyncHandler(async (req, res) => {
+  console.log("req", req.body);
+  console.log(req.file);
+
+  const { courseId } = req.params;
+  const userId = req.user._id;
+  const { title, subtitle, description, category, price, courseLevel } =
+    req.body;
+
+  const thumbnailFile = req.file;
+
+  const course = await Course.findById(courseId);
+  if (!course) {
+    throw new ApiError(404, "Course not found");
+  }
+
+  if (title) course.title = title;
+  if (subtitle) course.subtitle = subtitle;
+  if (description) course.description = description;
+  if (category) course.category = category;
+  if (price) course.price = price;
+  if (courseLevel) course.courseLevel = courseLevel;
+
+  let thumbnail;
+  if (thumbnailFile) {
+    if (course.thumbnail) {
+      try {
+        const publicId = course.thumbnail.split("/").pop().split(".")[0];
+        await deleteMediaFromCloudinary(publicId); //delete old image
+      } catch (error) {
+        throw new ApiError(500, "Failed to delete the existing thumbnail");
+      }
+    }
+    try {
+      thumbnail = await uploadMedia(thumbnailFile.path);
+      course.thumbnail = thumbnail?.secure_url;
+    } catch (error) {
+      throw new ApiError(500, "Failed to Upload the new thumbnail");
+    }
+  }
+
+  const updatedCourse = await course.save({ validateBeforeSave: true });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedCourse, "Course Updated Succesfully"));
+});
+
+const deleteCourse = asyncHandler(async (req, res) => {
+  const { courseId } = req.params;
+
+  const deleteCourse = await Course.findByIdAndDelete(courseId);
+  if (!deleteCourse) {
+    throw new ApiError(404, "Error Deleting Course");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, deleteCourse, "Course Deleted Succesfully"));
+});
+
+const getCourseById = asyncHandler(async (req, res) => {
+  const { courseId } = req.params;
+
+  const course = await Course.findById(courseId);
+  if (!course) {
+    throw new ApiError(404, "Course Not Found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, course, "Course Fetched Succesfullly"));
+});
+
+export {
+  createCourse,
+  getCreatorCourses,
+  updateCourse,
+  deleteCourse,
+  getCourseById,
+};

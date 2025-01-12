@@ -1,4 +1,4 @@
-import { Menu, School } from "lucide-react";
+import { LogOut, LucideLogOut, Menu, School } from "lucide-react";
 import React, { useEffect } from "react";
 import DarkMode from "@/DarkMode";
 import { Button } from "@/components/ui/button";
@@ -93,7 +93,7 @@ function Navbar() {
 
                   {/* Edit Profile Button */}
                   <DropdownMenuItem>
-                    <Link to="profile">Edit Profile </Link>a
+                    <Link to="profile">Edit Profile </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -101,8 +101,9 @@ function Navbar() {
                 {/* Alert for Logout */}
                 <DropdownMenuItem asChild>
                   <AlertDialog>
-                    <AlertDialogTrigger>
-                      <p className="text-red-800 text-sm ml-2">Logout</p>
+                    <AlertDialogTrigger className="flex my-auto mx-auto px-2 gap-36  text-red-800">
+                      <p className="text-red-800 text-sm ">Logout</p>
+                      <LucideLogOut className="" size={18} /> 
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -124,8 +125,8 @@ function Navbar() {
                 {/* Dashboard button for when we are instructor*/}
                 <DropdownMenuSeparator />
                 {role === "instructor" && (
-                  <DropdownMenuItem>
-                    <Link to="/admin/dashboard">Dashboard </Link>
+                  <DropdownMenuItem className="bg-blue-500 flex justify-center font-semibold text-sm">
+                    <Link to="/admin/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
