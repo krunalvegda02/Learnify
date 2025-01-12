@@ -31,10 +31,10 @@ export const CourseApi = createApi({
         method: "PATCH",
         body: formdata,
       }),
-      providesTags: ["Refetch_Creator_Course"],
+      invalidatesTags: ["Refetch_Creator_Course"],
     }),
     getCourseById: builder.query({
-      query: ( courseId ) => ({
+      query: (courseId) => ({
         url: `${courseId}`,
         method: "GET",
       }),

@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader, Loader2, LoaderPinwheel } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetCourseByIdQuery,
@@ -54,13 +54,13 @@ function CourseTab() {
     if (course) {
       setInput({
         title: course.title,
-        price: course.price,
-        subtitle: course.subtitle,
+        price: course.price || "",
+        subtitle: course.subtitle || "",
         category: course.category,
-        description: course.description,
-        courseLevel: course.courseLevel,
-        thumbnail: course.thumbnail,
-        isPublished: course.isPublished,
+        description: course.description || "",
+        courseLevel: course?.courseLevel || "",
+        thumbnail: course.thumbnail || "",
+        isPublished: course.isPublished || "",
       });
     }
     // console.log("input", input);
@@ -122,6 +122,14 @@ function CourseTab() {
       console.log("error", error);
     }
   }, [isSuccess, error]);
+
+  if (courseisLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[75vh]">
+        <Loader2 className="h-5 w-5 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <Card>
