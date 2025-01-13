@@ -4,6 +4,8 @@ import {
   createLecture,
   updateLecture,
   getUserLectures,
+  removeLecture,
+  getLecturebyId,
 } from "../controllers/lecture.controller.js";
 import upload from "../middlewares/multer.middleware.js";
 
@@ -15,3 +17,5 @@ lectureRoutes
   .route("/:lectureId")
   .patch(upload.single("lectureVideoFile"), updateLecture);
 lectureRoutes.route("/:courseId").get(getUserLectures);
+lectureRoutes.route("/:lectureId").delete(removeLecture);
+lectureRoutes.route("/:lectureId").get(getLecturebyId);

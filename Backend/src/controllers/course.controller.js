@@ -45,13 +45,23 @@ const updateCourse = asyncHandler(async (req, res) => {
   console.log(req.file);
 
   const { courseId } = req.params;
-  const userId = req.user._id;
   const { title, subtitle, description, category, price, courseLevel } =
     req.body;
-
   const thumbnailFile = req.file;
-  console.log(req.file);
-  
+  // console.log(req.file);
+
+  if (
+    !title &&
+    !subtitle &&
+    !description &&
+    !category &&
+    !price &&
+    !courseLevel
+  ) {
+    return res
+      .status(400)
+      .json(new ApiResponse(400, "Please Provide any Fields For Update"));
+  }
 
   const course = await Course.findById(courseId);
   if (!course) {

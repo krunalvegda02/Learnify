@@ -33,15 +33,14 @@ const createLecture = asyncHandler(async (req, res) => {
 });
 
 const updateLecture = asyncHandler(async (req, res) => {
-  const { lectureId } = req.params;
-  console.log("file", req.file);
+  // console.log("file", req.file);
   // console.log("body", req.body);
   // console.log("param", req.params);
-
   const { title, isPreviewFree } = req.body;
+  const { lectureId } = req.params;
   const lectureVideoFile = req.file;
 
-  if (!title) {
+  if (!title && !isPreviewFree && !lectureVideoFile) {
     throw new ApiError(400, "Please Provide Details to Update");
   }
 
@@ -98,4 +97,47 @@ const getUserLectures = asyncHandler(async (req, res) => {
     );
 });
 
-export { createLecture, updateLecture, getUserLectures };
+const removeLecture = asyncHandler(async (req, res) => {
+  const { lectureId } = req.params;
+
+  const lecture = await Lecture.findByIdAndDelete(lectureId);
+  if (!lecture) {
+    throw new ApiError(400, "Error deleting Lecture");
+  }
+
+  // delete lecture From Cloudinary
+  if (lecture.publicId) {
+    await deleteLectureFromCloudinary(lecture.publicId);
+  }
+
+  // remove lecture reference from course
+  await Course.updateOne(
+    { lectures: lectureId },
+    { $pull: { lectures: lectureId } }
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Lecture Deleted Succesfully"));
+});
+
+const getLecturebyId = asyncHandler(async (req, res) => {
+  const { lectureId } = req.params;
+
+  const lecture = await Lecture.findById(lectureId);
+  if (!lecture) {
+    throw new ApiError(400, "No lecture Found");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, lecture, "Lecture Fetched Succesfully"));
+});
+
+export {
+  createLecture,
+  updateLecture,
+  getUserLectures,
+  removeLecture,
+  getLecturebyId,
+};
