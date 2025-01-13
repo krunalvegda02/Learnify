@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader, Loader2, LoaderPinwheel } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetCourseByIdQuery,
@@ -113,7 +113,7 @@ function CourseTab() {
   useEffect(() => {
     if (isSuccess) {
       console.log("data", data);
-
+      navigate(`/admin/course`);
       toast.success(data?.message || "Course Updated Succesfully");
     }
 

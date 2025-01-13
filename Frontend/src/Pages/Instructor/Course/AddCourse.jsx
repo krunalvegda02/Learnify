@@ -31,11 +31,12 @@ function AddCourse() {
 
   const creatCourseHandler = async () => {
     await createCourse({ title, category });
-    navigate('/admin/course')
   };
 
   useEffect(() => {
     if (isSuccess) {
+      // console.log("data", data.data._id);
+      navigate(`/admin/course/${data.data._id}`);
       toast.success(data?.message || "Course Created Succesfully");
     }
 

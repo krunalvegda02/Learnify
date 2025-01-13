@@ -31,8 +31,7 @@ function CreateLecture() {
     useCreateLectureMutation();
 
   const createLectureHandler = async () => {
-    console.log(lectureTitle);
-
+    // console.log(lectureTitle);
     await createLecture({ title: lectureTitle, courseId });
   };
 
@@ -42,9 +41,11 @@ function CreateLecture() {
       toast.success(data?.message || "Lecture Created Successfully");
     }
 
-    if (error) {
+    if (error) {c
       toast.error("Error Creating Lecture");
     }
+
+
   }, [isSuccess, error]);
 
   return (
