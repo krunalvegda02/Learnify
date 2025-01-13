@@ -5,6 +5,7 @@ import {
   deleteCourse,
   getCourseById,
   getCreatorCourses,
+  togglePublishCourse,
   updateCourse,
 } from "../controllers/course.controller.js";
 import upload from "../middlewares/multer.middleware.js";
@@ -19,5 +20,7 @@ courseRouter
   .patch(upload.single("thumbnailFile"), updateCourse);
 courseRouter.route("/:courseId").get(getCourseById);
 courseRouter.route("/:courseId").delete(deleteCourse);
+
+courseRouter.route("/:courseId/publish").patch(togglePublishCourse);
 
 export default courseRouter;

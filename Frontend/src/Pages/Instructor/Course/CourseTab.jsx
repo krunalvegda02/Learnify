@@ -19,10 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2 } from "lucide-react";
+import { Loader, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetCourseByIdQuery,
+  usePublishCourseMutation,
   useUpdateCourseMutation,
 } from "@/Redux/Features/Api/CourseApi";
 import { toast } from "sonner";
@@ -44,8 +45,11 @@ function CourseTab() {
   const navigate = useNavigate();
   const [previewThumbnail, setPreviewThumbnail] = useState("");
 
-  const { data: coursedata, isLoading: courseisLoading } =
-    useGetCourseByIdQuery(courseId);
+  const {
+    data: coursedata,
+    isLoading: courseisLoading,
+    refetch,
+  } = useGetCourseByIdQuery(courseId);
   const course = coursedata?.data;
   // console.log("course", course);
 
@@ -60,7 +64,7 @@ function CourseTab() {
         description: course.description || "",
         courseLevel: course?.courseLevel || "",
         thumbnail: course.thumbnail || "",
-        isPublished: course.isPublished || "",
+        isPublished: course.isPublished,
       });
     }
     // console.log("input", input);
@@ -123,6 +127,23 @@ function CourseTab() {
     }
   }, [isSuccess, error]);
 
+  const [publishCourse, { isLoading: publishIsloading }] =
+    usePublishCourseMutation();
+
+  const publishHandler = async (action) => {
+    console.log("action", action);
+
+    try {
+      const response = await publishCourse({ courseId, query: action });
+      if (response.data) {
+        refetch();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to Change Publish Status");
+    }
+  };
+
   if (courseisLoading) {
     return (
       <div className="flex justify-center items-center min-h-[75vh]">
@@ -141,8 +162,22 @@ function CourseTab() {
           </CardDescription>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
-            {input.isPublished ? "Unpublish" : "Publish"}
+          <Button
+            disabled={course.lectures.length === 0 || publishIsloading}
+            variant="outline"
+            onClick={() =>
+              publishHandler(course.isPublished ? "false" : "true")
+            }
+          >
+            {publishIsloading ? (
+              <>
+                <Loader className="h-4 w-4 animate-spin" />
+              </>
+            ) : course.isPublished ? (
+              "Unpublish"
+            ) : (
+              "Publish"
+            )}
           </Button>
           <Button>Remove Course</Button>
         </div>

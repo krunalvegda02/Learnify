@@ -143,10 +143,29 @@ const getCourseById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, course, "Course Fetched Succesfullly"));
 });
 
+const togglePublishCourse = asyncHandler(async (req, res) => {
+  const { courseId } = req.params;
+  const { publish } = req.query;
+
+  const course = await Course.findById(courseId);
+  if (!course) {
+    throw new ApiError(494, "Course not found");
+  }
+
+  course.isPublished = publish === "true";
+  await course.save({ validateBeforeSave: false });
+
+  const statusMsg = course.isPublished ? "Published" : "not Published";
+  return res
+    .status(200)
+    .json(new ApiResponse(200, course, `Course is ${statusMsg}`));
+});
+
 export {
   createCourse,
   getCreatorCourses,
   updateCourse,
   deleteCourse,
   getCourseById,
+  togglePublishCourse,
 };
