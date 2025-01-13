@@ -34,17 +34,24 @@ const createLecture = asyncHandler(async (req, res) => {
 
 const updateLecture = asyncHandler(async (req, res) => {
   const { lectureId } = req.params;
+  console.log("file", req.file);
+  // console.log("body", req.body);
+  // console.log("param", req.params);
+
   const { title, isPreviewFree } = req.body;
-  const { lectureVideoFile } = req.files;
-  if (!title || !lectureVideoFile || !isPreviewFree) {
+  const lectureVideoFile = req.file;
+
+  if (!title) {
     throw new ApiError(400, "Please Provide Details to Update");
   }
 
   const lecture = await Lecture.findById(lectureId);
+  if (!lecture) {
+    throw new ApiError(404, "Lecture Not Found");
+  }
 
-  if (title) lecture.title = title;
-  if (isPreviewFree) lecture.isPreviewFree = isPreviewFree;
-
+  // For Uploading Lectures
+  let lectureVideo;
   if (lectureVideoFile) {
     if (lecture.lectureVideo) {
       try {
@@ -55,12 +62,24 @@ const updateLecture = asyncHandler(async (req, res) => {
       }
     }
     try {
-      await uploadMedia(lectureVideoFile.path);
-      lecture.lectureVideo = lectureVideoFile?.secure_url;
+      lectureVideo = await uploadMedia(lectureVideoFile.path);
+      // console.log("lectureVideo", lectureVideo);
+      lecture.publicId = lectureVideo.public_id;
+      lecture.lectureVideo = lectureVideo?.secure_url;
     } catch (error) {
+      console.log(error);
       throw new ApiError(400, "Error Uploading Video Lecture");
     }
   }
+
+  if (title) lecture.title = title;
+  if (isPreviewFree) lecture.isPreviewFree = isPreviewFree;
+
+  const updatedLecture = await lecture.save({ validateBeforeSave: true });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedLecture, "Lecture Updated"));
 });
 
 const getUserLectures = asyncHandler(async (req, res) => {

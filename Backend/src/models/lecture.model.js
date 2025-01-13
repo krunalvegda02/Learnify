@@ -8,6 +8,7 @@ const lectureSchema = new mongoose.Schema(
     },
     lectureVideo: {
       type: String,
+      default: "",
     },
     publicId: {
       type: String,

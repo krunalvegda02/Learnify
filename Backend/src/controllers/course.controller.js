@@ -50,6 +50,8 @@ const updateCourse = asyncHandler(async (req, res) => {
     req.body;
 
   const thumbnailFile = req.file;
+  console.log(req.file);
+  
 
   const course = await Course.findById(courseId);
   if (!course) {

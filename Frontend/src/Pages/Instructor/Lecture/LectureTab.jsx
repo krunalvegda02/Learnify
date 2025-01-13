@@ -22,9 +22,12 @@ function LectureTab() {
   const fileChangeHandler = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const formData = new FormData();
+      setUploadVideoFile(file);
+      console.log(file);
     }
   };
+
+  const updateLecture = async () => {};
 
   return (
     <Card>
@@ -45,6 +48,7 @@ function LectureTab() {
           <Input
             type="text"
             placeholder="Enter title for Lecture"
+            value={title}
             className="mb-2 "
           ></Input>
         </div>
@@ -52,14 +56,19 @@ function LectureTab() {
           <Label className="mb-1.5">
             Video<span className="text-red-600">*</span>
           </Label>
-          <Input type="file" accept="video/*" className="w-fit"></Input>
+          <Input
+            onChange={fileChangeHandler}
+            type="file"
+            accept="video/*"
+            className="w-fit"
+          ></Input>
         </div>
         <div className="flex items-center space-x-2 my-5">
-          <Switch id="freeVideo" />
+          <Switch id="freeVideo" value={isFree} />
           <Label htmlFor="freeVideo">Is this Video FREE</Label>
         </div>
         <div>
-          <Button>Update Lecture</Button>
+          <Button onClick={updateLecture}> Update Lecture</Button>
         </div>
       </CardContent>
     </Card>
