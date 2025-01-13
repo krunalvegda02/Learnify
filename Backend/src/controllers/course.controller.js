@@ -2,6 +2,7 @@ import { Course } from "../models/Course.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
+import { removeLecture } from "./lecture.controller.js";
 import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 const createCourse = asyncHandler(async (req, res) => {
@@ -34,7 +35,7 @@ const getCreatorCourses = asyncHandler(async (req, res) => {
   if (courses.length === 0) {
     return res
       .status(200)
-      .json(new ApiResponse(200, [],"Instructor Doesn't Publish any Course"));
+      .json(new ApiResponse(200, [], "Instructor Doesn't Publish any Course"));
   }
 
   return res
@@ -105,7 +106,7 @@ const updateCourse = asyncHandler(async (req, res) => {
 const deleteCourse = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
 
-  const deleteCourse = await Course.findByIdAndDelete(courseId);
+  const deleteCourse = await Course.findById(courseId);
   if (!deleteCourse) {
     throw new ApiError(404, "Error Deleting Course");
   }
@@ -117,9 +118,16 @@ const deleteCourse = asyncHandler(async (req, res) => {
     await deleteMediaFromCloudinary(thumbnailId);
   }
 
+  // const courseLectures = deleteCourse.lectures;
+  // const deleteLectures = await courseLectures.map((lectureId) =>
+  //   removeLecture({ params: { lectureId } }, res)
+  // );
+
   return res
     .status(200)
-    .json(new ApiResponse(200, deleteCourse, "Course Deleted Succesfully"));
+    .json(
+      new ApiResponse(200, { deleteLectures }, "Course Deleted Succesfully")
+    );
 });
 
 const getCourseById = asyncHandler(async (req, res) => {

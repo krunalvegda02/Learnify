@@ -13,9 +13,9 @@ export const lectureRoutes = Router();
 lectureRoutes.use(isAuthenticated);
 
 lectureRoutes.route("/:courseId").post(createLecture);
+lectureRoutes.route("/:courseId").get(getUserLectures);
 lectureRoutes
   .route("/:lectureId")
   .patch(upload.single("lectureVideoFile"), updateLecture);
-lectureRoutes.route("/:courseId").get(getUserLectures);
 lectureRoutes.route("/:lectureId").delete(removeLecture);
-lectureRoutes.route("/:lectureId").get(getLecturebyId);
+lectureRoutes.route("/get/:lectureId").get(getLecturebyId);
