@@ -38,6 +38,8 @@ const updateLecture = asyncHandler(async (req, res) => {
   // console.log("param", req.params);
   const { title, isPreviewFree } = req.body;
   const { lectureId } = req.params;
+  console.log(req.params);
+
   const lectureVideoFile = req.file;
 
   if (!title && !isPreviewFree && !lectureVideoFile) {
@@ -78,7 +80,7 @@ const updateLecture = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, updatedLecture, "Lecture Updated"));
+    .json(new ApiResponse(200, updatedLecture, "Lecture Updated Succesfully"));
 });
 
 const getUserLectures = asyncHandler(async (req, res) => {

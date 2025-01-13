@@ -6,6 +6,8 @@ import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 const createCourse = asyncHandler(async (req, res) => {
   const { title, category } = req.body;
+  console.log("req.body", req.body);
+
   if (!title || !category) {
     throw new ApiError(400, "Course Title And Category must be provided");
   }
@@ -26,13 +28,13 @@ const getCreatorCourses = asyncHandler(async (req, res) => {
 
   const courses = await Course.find({ creator: userId });
   if (!courses) {
-    throw new ApiError(404, "Course Not Found");
+    return res.status(400, "User does not Publish any Courses");
   }
 
   if (courses.length === 0) {
     return res
       .status(200)
-      .json(new ApiResponse(200, "Instructor Doesn't Publish any Course"));
+      .json(new ApiResponse(200, [],"Instructor Doesn't Publish any Course"));
   }
 
   return res
@@ -106,6 +108,13 @@ const deleteCourse = asyncHandler(async (req, res) => {
   const deleteCourse = await Course.findByIdAndDelete(courseId);
   if (!deleteCourse) {
     throw new ApiError(404, "Error Deleting Course");
+  }
+
+  if (deleteCourse.thumbnail) {
+    const thumbnailId = deleteCourse.thumbnail.split("/").pop().split(".")[0];
+    console.log("thumbnailId", thumbnailId);
+
+    await deleteMediaFromCloudinary(thumbnailId);
   }
 
   return res

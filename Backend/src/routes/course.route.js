@@ -2,6 +2,7 @@ import { Router } from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import {
   createCourse,
+  deleteCourse,
   getCourseById,
   getCreatorCourses,
   updateCourse,
@@ -17,5 +18,6 @@ courseRouter
   .route("/:courseId")
   .patch(upload.single("thumbnailFile"), updateCourse);
 courseRouter.route("/:courseId").get(getCourseById);
+courseRouter.route("/:courseId").delete(deleteCourse);
 
 export default courseRouter;
