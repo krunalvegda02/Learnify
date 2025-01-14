@@ -90,14 +90,16 @@ function Navbar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   {/* My Learning BUtton */}
-                  <DropdownMenuItem>
-                    <Link to="my-learning">My Learning</Link>
-                  </DropdownMenuItem>
+
+                  <Link to="my-learning">
+                    <DropdownMenuItem>My Learning </DropdownMenuItem>
+                  </Link>
 
                   {/* Edit Profile Button */}
-                  <DropdownMenuItem>
-                    <Link to="profile">Edit Profile </Link>
-                  </DropdownMenuItem>
+
+                  <Link to="profile">
+                    <DropdownMenuItem>Edit Profile </DropdownMenuItem>
+                  </Link>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
 
@@ -128,9 +130,11 @@ function Navbar() {
                 {/* Dashboard button for when we are instructor*/}
                 <DropdownMenuSeparator />
                 {role === "instructor" && (
-                  <DropdownMenuItem className="bg-blue-500 flex justify-center font-semibold text-sm">
-                    <Link to="/admin/dashboard">Dashboard</Link>
-                  </DropdownMenuItem>
+                  <Link to="/admin/dashboard">
+                    <DropdownMenuItem className="bg-blue-500 flex justify-center font-semibold text-sm">
+                      Dashboard
+                    </DropdownMenuItem>
+                  </Link>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>

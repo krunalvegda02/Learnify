@@ -1,21 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Course from "./Course";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetPublishCourseQuery } from "@/Redux/Features/Api/CourseApi";
+import { toast } from "sonner";
 
 function Courses() {
-  const isLoading = false;
-  const courses = [1, 2, 3, 4, 5, 6];
+  // const isLoading = false;
+  // const courses = [1, 2, 3, 4, 5, 6];
+  const [courses, setCourses] = useState();
+  console.log("courses,", courses);
+
+  const { data, isLoading, isSuccess, error } = useGetPublishCourseQuery();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log("data", data.data);
+      setCourses(data.data);
+    }
+
+    if (error) {
+      toast.error("Error Fetching Courses");
+    }
+  }, [isSuccess, error]);
+
+  if (isLoading) {
+    return Array.from({ length: 8 }).map((_, index) => (
+      <CourseSkeleton key={index} />
+    ));
+  }
 
   return (
     <div className="bg-gray-50 ">
-      <div className="max-w-6xl mx-auto  p-6">
+      <div className="max-w-6xl mx-auto  p-5 ">
         <h2 className="font-bold text-center text-2xl mb-6">Our Courses</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6  mb-10">
-          {isLoading
-            ? Array.from({ length: 8 }).map((_, index) => (
-                <CourseSkeleton key={index} />
-              ))
-            : courses.map((course, index) => <Course key={index} />)}
+          {courses &&
+            courses.map((course, index) => (
+              <Course key={index} course={course} />
+            ))}
         </div>
       </div>
     </div>
