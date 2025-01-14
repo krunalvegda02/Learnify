@@ -5,6 +5,7 @@ import {
   deleteCourse,
   getCourseById,
   getCreatorCourses,
+  getPublishedCourse,
   togglePublishCourse,
   updateCourse,
 } from "../controllers/course.controller.js";
@@ -20,6 +21,7 @@ courseRouter
   .patch(upload.single("thumbnailFile"), updateCourse);
 courseRouter.route("/:courseId").get(getCourseById);
 courseRouter.route("/:courseId").delete(deleteCourse);
+courseRouter.route("/c/publish-courses").get(getPublishedCourse);
 
 courseRouter.route("/:courseId/publish").patch(togglePublishCourse);
 
