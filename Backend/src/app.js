@@ -25,5 +25,6 @@ import { lectureRoutes } from "./routes/lecture.routes.js";
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/lecture", lectureRoutes);
+app.use("api/v1", paypalRoute);
 
 export default app;

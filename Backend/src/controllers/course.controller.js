@@ -24,6 +24,23 @@ const createCourse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, course, "Course Created Succesfully"));
 });
 
+const getPublishedCourse = asyncHandler(async (req, res) => {
+  
+  const courses = await Course.find({ isPublished: true }).populate({
+    path: "creator",
+    select: "username avatar",
+  });
+  if (!courses) {
+    throw new ApiError(404, "Course not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, courses, "Published Course Fetched Succesfully")
+    );
+});
+
 const getCreatorCourses = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
@@ -141,23 +158,6 @@ const getCourseById = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, course, "Course Fetched Succesfullly"));
-});
-
-const getPublishedCourse = asyncHandler(async (req, res) => {
-  
-  const courses = await Course.find({ isPublished: true }).populate({
-    path: "creator",
-    select: "username avatar",
-  });
-  if (!courses) {
-    throw new ApiError(404, "Course not found");
-  }
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(200, courses, "Published Course Fetched Succesfully")
-    );
 });
 
 const togglePublishCourse = asyncHandler(async (req, res) => {
