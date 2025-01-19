@@ -4,6 +4,7 @@ import rootReducer from "./rootReducer";
 import { authApi } from "./Features/Api/authApi";
 import { CourseApi } from "./Features/Api/CourseApi";
 import { lectureApi } from "./Features/Api/lectureApi";
+import { purchaseApi } from "./Features/Api/purchaseApi";
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -11,7 +12,8 @@ export const store = configureStore({
     defaultMiddlleware().concat(
       authApi.middleware,
       CourseApi.middleware,
-      lectureApi.middleware
+      lectureApi.middleware,
+      purchaseApi.middleware
     ),
 });
 
