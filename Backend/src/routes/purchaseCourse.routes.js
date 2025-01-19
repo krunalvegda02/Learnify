@@ -1,13 +1,14 @@
-import { Router } from "express";
+import { raw, Router } from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
-import { purchaseCourse } from "../controllers/purchaseCourse.controller.js";
+import {
+  createCheckoutSession,
+  stripeWebhook,
+} from "../controllers/purchaseCourse.controller.js";
 
-const purchaseCourseRoutes = Router();
+export const router = Router();
+// router.use(isAuthenticated);
 
-lectureRoutes.use(isAuthenticated);
-
-purchaseCourseRoutes.route("/success").get(hello);
-purchaseCourseRoutes.route("/order").get(hello);
-purchaseCourseRoutes.route("/cancel").get(hello);
-
-export default purchaseCourseRoutes;
+router.route("/checkout/create-checkout-session").post(isAuthenticated,createCheckoutSession);
+router.route("/webhook").post(raw({ type: "applicaiton/json" }), stripeWebhook);
+router.route("/course/:courseId/detail-with-status").get();
+// purchaseCourseRoutes.route("/").get(getAllpurchaseCourse);

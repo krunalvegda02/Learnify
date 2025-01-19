@@ -11,6 +11,7 @@ import {
 } from "../controllers/course.controller.js";
 import upload from "../middlewares/multer.middleware.js";
 
+
 const courseRouter = Router();
 courseRouter.use(isAuthenticated);
 

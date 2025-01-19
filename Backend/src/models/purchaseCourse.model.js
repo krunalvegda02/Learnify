@@ -23,7 +23,7 @@ const purchaseCourseSchema = mongoose.Schema(
     },
     PaymentId: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
   { timeStamps: true }

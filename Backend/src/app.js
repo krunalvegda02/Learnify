@@ -21,10 +21,11 @@ app.use(cookieParser()); // Correctly imported and used
 import userRoute from "./routes/user.route.js";
 import courseRouter from "./routes/course.route.js";
 import { lectureRoutes } from "./routes/lecture.routes.js";
+import {router} from "./routes/purchaseCourse.routes.js"
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/course", courseRouter);
 app.use("/api/v1/lecture", lectureRoutes);
-app.use("api/v1", paypalRoute);
+app.use("/api/v1/purchase", router);
 
 export default app;
