@@ -24,7 +24,7 @@ function LectureTab() {
   const courseId = useParams().courseId;
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
-  const [isFree, setIsFree] = useState(true);
+  const [isFree, setIsFree] = useState(false);
   const [uploadVideoFile, setUploadVideoFile] = useState(null);
 
   //? Get LEcture details from Id
@@ -85,6 +85,11 @@ function LectureTab() {
   };
 
   useEffect(() => {
+    if (lectureData) {
+      setIsFree(lectureData.data.isPreviewFree);
+      setTitle(lectureData.data.title);
+    }
+
     if (isSuccess) {
       toast.success(data?.message || "Lecture Updated Succesfully");
 
@@ -94,7 +99,7 @@ function LectureTab() {
     if (isError) {
       console.log("Error Updating Profile, Please try again");
     }
-  }, [error, isSuccess]);
+  }, [error, isSuccess, lectureData]);
 
   if (lectureIsloading) {
     return <Skeleton />;
@@ -127,7 +132,7 @@ function LectureTab() {
           <Input
             type="text"
             placeholder="Enter title for Lecture"
-            value={lectureData.data.title}
+            value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="mb-2 "
           ></Input>
@@ -145,14 +150,13 @@ function LectureTab() {
         </div>
         <div className="flex items-center space-x-2 my-5">
           <Switch
-            id="isFree"
-            checked={lectureData.data.isPreviewFree}
+            checked={isFree}
             onCheckedChange={(checked) => {
               setIsFree(checked);
               console.log("switch", checked);
             }}
           />
-          <Label htmlFor="isFree">Is this Video FREE</Label>
+          <Label>Is this Video FREE</Label>
         </div>
         <div>
           <Button disabled={isLoading} onClick={updateLectureHandler}>

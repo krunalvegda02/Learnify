@@ -16,6 +16,8 @@ import { useGetCourseByIdQuery } from "@/Redux/Features/Api/CourseApi";
 
 const CourseDetails = () => {
   const courseId = useParams().courseId;
+  console.log(courseId,"courseID");
+  
   const { data, isLoading } = useGetCourseByIdQuery(courseId);
 
   const purchase = false;
@@ -86,7 +88,7 @@ const CourseDetails = () => {
               {purchase ? (
                 <Button className="w-full">Continue Course</Button>
               ) : (
-                <PurchaseCourseBtn />
+                <PurchaseCourseBtn courseId={courseId} />
               )}
             </CardFooter>
           </Card>

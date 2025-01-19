@@ -14,6 +14,7 @@ import EditCourse from "./Pages/Instructor/Course/EditCourse";
 import CreateLecture from "./Pages/Instructor/Lecture/CreateLecture";
 import EditLecture from "./Pages/Instructor/Lecture/EditLecture";
 import CourseDetails from "./Pages/Instructor/Course/CourseDetails";
+import CourseProgress from "./Pages/Instructor/Course/CourseProgress";
 
 function App() {
   const AppRouter = createBrowserRouter([
@@ -45,6 +46,10 @@ function App() {
         {
           path: "details/:courseId",
           element: <CourseDetails />,
+        },
+        {
+          path: "progress/:courseId",
+          element: <CourseProgress />,
         },
 
         // Admin routes
