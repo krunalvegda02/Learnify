@@ -9,65 +9,79 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { BadgeInfo, PlayCircle } from "lucide-react";
+import { BadgeInfo, PlayCircle, LockKeyhole } from "lucide-react";
 import React from "react";
-import { useParams } from "react-router-dom";
-import { useGetCourseByIdQuery } from "@/Redux/Features/Api/CourseApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetCourseDetailswithStatusQuery } from "@/Redux/Features/Api/purchaseApi";
+import ReactPlayer from "react-player";
 
 const CourseDetails = () => {
   const courseId = useParams().courseId;
-  console.log(courseId,"courseID");
-  
-  const { data, isLoading } = useGetCourseByIdQuery(courseId);
+  const navigate = useNavigate();
+  // console.log(courseId, "courseID");
 
-  const purchase = false;
+  const { data, isLoading, isError, error } =
+    useGetCourseDetailswithStatusQuery(courseId);
+
+  const handleContinueCourse = () => {
+    if (data.purchased === "Completed") {
+      navigate(`/progress/${courseId}`);
+    }
+  };
 
   if (isLoading) {
     return <SkeletonCard />;
   }
-  console.log("data", data.data);
+  console.log("data", data);
+
   return (
     <div className="mt-[3.2rem] space-y-5">
       <div className="bg-[#2D2F31] text-white">
         <div className="max-w-6xl mx-auto py-8 px-4 md:px-8 flex flex-col gap-2">
-          <h1 className="font-bold text-2xl md:text-3xl">{data.data?.title}</h1>
-          <p className="text-base md:text-lg ">{data.data.subtitle}</p>
+          <h1 className="font-bold text-2xl md:text-3xl">
+            {data.course?.title}
+          </h1>
+          <p className="text-base md:text-lg ">{data.course.subtitle}</p>
           <p>
             Created By{" "}
             <span className="text-[#C0C4FC] underline italic">
-              {data.data.title}
+              {data.course?.creator?.username}
             </span>
           </p>
           <div className="flex items-center gap-2 text-sm">
-            <BadgeInfo size={16} /> <p>Last Updated {data.data.updatedAt}</p>
+            <BadgeInfo size={16} />
+            <p>Last Updated: {data.course.updatedAt.split("T")[0]}</p>
           </div>
           <p>Students Enrolled: 1</p>
         </div>
       </div>
       {/* Left side COntent */}
       <div className=" max-w-6xl mx-auto my-5 px-4 md:px-8 flex  flex-col lg:flex-row justify-between gap-10 ">
-        <div className="w-full lg:w-1/2 space-y-5">
+        <div className="w-full lg:w-1/2 space-y-3">
           <h1 className="font-bold text-xl md:text-2xl">Description</h1>
-          <p className="text-sm">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quos
-            molestiae quod, accusantium perspiciatis minus, explicabo sit quia
-            sed expedita odio rerum quibusdam consequatur ducimus aliquid
-            dignissimos modi saepe, voluptas necessitatibus eius sequi excepturi
-            quisquam? Itaque dicta rem numquam vel eos obcaecati repellendus
-            similique culpa nihil magni voluptatibus, voluptate tempore sed
-          </p>
+          <p
+            className="text-sm"
+            dangerouslySetInnerHTML={{ __html: data.course.description }}
+          />
+
           <Card>
             <CardHeader>
-              <CardTitle>Course COntente</CardTitle>
-              <CardDescription>4 lectures </CardDescription>
+              <CardTitle>Course Contents</CardTitle>
+              <CardDescription>
+                {data.course.lectures.length} Lectures
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              {[1, 2, 3].map((lecture, index) => (
+            <CardContent className="space-y-2">
+              {data.course.lectures.map((lecture, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <span>
-                    {true ? <PlayCircle size={16} /> : <Lock size={16} />}
+                    {lecture.isPreviewFree ? (
+                      <PlayCircle size={16} />
+                    ) : (
+                      <LockKeyhole size={16} />
+                    )}
                   </span>
-                  <p>Lecture title </p>
+                  <p>{lecture.title}</p>
                 </div>
               ))}
             </CardContent>
@@ -77,16 +91,28 @@ const CourseDetails = () => {
         <div className="w-full lg:w-1/3">
           <Card>
             <CardContent className="p-4 flex flex-col">
-              <div className="w-full aspect-video mb-4">video</div>
-              <h1>Lectue title</h1>
+              <div className="w-full aspect-video mb-4">
+                <ReactPlayer
+                  width="100%"
+                  height="100%"
+                  url={
+                    data.course.lectures[0]?.lectureVideo ||
+                    data.course.thumbnail
+                  }
+                  controls={true}
+                />
+              </div>
+              <h1>{data.course.lectures[0]?.title}</h1>
               <Separator className="my-2" />
               <h1 className="text-lg md:text-xl font-semibold">
-                Course Price:
+                Course Price: {data.course.price}₹
               </h1>
             </CardContent>
             <CardFooter className="flex justify-center p-4">
-              {purchase ? (
-                <Button className="w-full">Continue Course</Button>
+              {data.purchased === "Completed" ? (
+                <Button className="w-full" onClick={handleContinueCourse}>
+                  Continue Course
+                </Button>
               ) : (
                 <PurchaseCourseBtn courseId={courseId} />
               )}

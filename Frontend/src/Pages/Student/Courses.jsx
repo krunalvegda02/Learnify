@@ -8,13 +8,13 @@ function Courses() {
   // const isLoading = false;
   // const courses = [1, 2, 3, 4, 5, 6];
   const [courses, setCourses] = useState();
-  console.log("courses,", courses);
+  // console.log("courses,", courses);
 
   const { data, isLoading, isSuccess, error } = useGetPublishCourseQuery();
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("data", data.data);
+      // console.log("data", data.data);
       setCourses(data.data);
     }
 

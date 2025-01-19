@@ -19,12 +19,10 @@ export const createCheckoutSession = async (req, res) => {
 
     const purchaseExisted = await purchaseCourse.findOne({
       courseId: courseId,
+      userId: userId,
     });
-    if (
-      purchaseExisted.courseId === courseId &&
-      purchaseExisted.userId === userId
-    ) {
-      await purchaseCourse.delete({ courseId: courseId }); // Delete all records matching courseId
+    if (purchaseExisted) {
+      await purchaseCourse.deleteOne({ courseId: courseId, userId: userId }); // Delete all records matching courseId
     }
     // console.log("purchase", purchaseExisted);
 
@@ -158,25 +156,30 @@ export const stripeWebhook = async (req, res) => {
   }
   res.status(200).send();
 };
+
 export const getCourseDetailWithPurchaseStatus = async (req, res) => {
   try {
     const { courseId } = req.params;
-    const userId = req.id;
+    const userId = req.user._id;
+    console.log("userid", req.user._id);
+    console.log("courseid", courseId);
 
     const course = await Course.findById(courseId)
       .populate({ path: "creator" })
       .populate({ path: "lectures" });
-
-    const purchased = await CoursePurchase.findOne({ userId, courseId });
-    console.log(purchased);
-
     if (!course) {
       return res.status(404).json({ message: "course not found!" });
     }
 
+    const purchased = await purchaseCourse.findOne({
+      userId: userId,
+      courseId: courseId,
+    });
+    console.log("purchased", purchased);
+
     return res.status(200).json({
       course,
-      purchased: !!purchased, // true if purchased, false otherwise
+      purchased: purchased?.status || "", // true if purchased, false otherwise
     });
   } catch (error) {
     console.log(error);
@@ -188,6 +191,7 @@ export const getAllPurchasedCourse = async (_, res) => {
     const purchasedCourse = await CoursePurchase.find({
       status: "completed",
     }).populate("courseId");
+
     if (!purchasedCourse) {
       return res.status(404).json({
         purchasedCourse: [],
@@ -202,6 +206,7 @@ export const getAllPurchasedCourse = async (_, res) => {
 };
 
 // Paypal Code
+
 // paypal.configure({
 //   mode: "sandbox", // live
 //   client_id: process.env.PAYPAL_CLIENT_KEY,
