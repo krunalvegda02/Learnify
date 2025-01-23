@@ -32,7 +32,7 @@ const CourseDetails = () => {
   if (isLoading) {
     return <SkeletonCard />;
   }
-  console.log("data", data);
+  // console.log("data", data);
 
   return (
     <div className="mt-[3.2rem] space-y-5">

@@ -9,13 +9,13 @@ import {
 
 const courseProgressRouter = Router();
 
-// courseProgressRouter.use(isAuthenticated);
+courseProgressRouter.use(isAuthenticated);
 
-courseProgressRouter.route("/:courseId").get(isAuthenticated,getCourseProgress);
+courseProgressRouter.route("/:courseId").get(getCourseProgress);
 courseProgressRouter
   .route("/:courseId/lecture/:lectureId/view")
   .post(updateLectureProgress);
-courseProgressRouter.route("/:courseId/complete").get(markAsComplete);
-courseProgressRouter.route("/:courseId/incomplete").get(markAsIncomplete);
+courseProgressRouter.route("/:courseId/complete").post(markAsComplete);
+courseProgressRouter.route("/:courseId/incomplete").post(markAsIncomplete);
 
 export default courseProgressRouter;

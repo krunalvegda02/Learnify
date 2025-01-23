@@ -8,7 +8,6 @@ const getCourseProgress = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
   const userId = req.user._id;
   console.log("userId", userId);
-  
 
   //   step-1 Fetch user course progress
   let course_progress = await courseProgress
@@ -41,6 +40,7 @@ const getCourseProgress = asyncHandler(async (req, res) => {
 
 const updateLectureProgress = asyncHandler(async (req, res) => {
   const { courseId, lectureId } = req.params;
+  // console.log(req.params);
   const userId = req.user._id;
 
   // fetch and create courseProgress
@@ -56,7 +56,7 @@ const updateLectureProgress = asyncHandler(async (req, res) => {
   }
 
   //   find the lecture progress in the course progress
-  const lectureIndex = courseProgress.lectureProgress.findIndex(
+  const lectureIndex = course_progress.lectureProgress.findIndex(
     (lecture) => lecture.lectureId === lectureId
   );
 
@@ -73,7 +73,7 @@ const updateLectureProgress = asyncHandler(async (req, res) => {
   }
 
   // If all lectures are completed
-  const lectureProgressLength = courseProgress.lectureProgress.filter(
+  const lectureProgressLength = course_progress.lectureProgress.filter(
     (lectureProgress) => lectureProgress.viewed
   ).length;
 
