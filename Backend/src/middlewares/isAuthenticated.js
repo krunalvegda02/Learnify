@@ -5,6 +5,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const isAuthenticated = asyncHandler(async (req, res, next) => {
   const usertoken = req.cookies?.accessToken;
+ { console.log("usertoken", req.cookies?.accessToken);}
+
   if (!usertoken) {
     throw new ApiError(401, "User Not Authenticated");
   }

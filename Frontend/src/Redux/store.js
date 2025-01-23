@@ -5,6 +5,7 @@ import { authApi } from "./Features/Api/authApi";
 import { CourseApi } from "./Features/Api/CourseApi";
 import { lectureApi } from "./Features/Api/lectureApi";
 import { purchaseApi } from "./Features/Api/purchaseApi";
+import { courseProgressApi } from "./Features/Api/courseProgressApi";
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -13,7 +14,8 @@ export const store = configureStore({
       authApi.middleware,
       CourseApi.middleware,
       lectureApi.middleware,
-      purchaseApi.middleware
+      purchaseApi.middleware,
+      courseProgressApi.middleware
     ),
 });
 

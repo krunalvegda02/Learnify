@@ -3,7 +3,7 @@ dotenv.config();
 import app from "./app.js";
 import connectDB from "./database/db.js";
 
-console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN);
+// console.log("CORS_ORIGIN:", process.env.CORS_ORIGIN);
 const PORT = process.env.PORT;
 
 connectDB()
