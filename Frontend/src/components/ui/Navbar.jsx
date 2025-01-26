@@ -39,9 +39,11 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
 function Navbar() {
-  const user = useSelector((state) => state.auth.isAuthenticated);
-  const role = useSelector((state) => state.auth.user?.role);
-  const avatar = useSelector((state) => state.auth.user?.avatar);
+  const userdata = useSelector((state) => state.auth);
+  const isAuth = userdata?.isAuthenticated;
+  const role = userdata?.user?.role;
+  console.log("user", userdata);
+  const avatar = userdata.user?.avatar;
   // console.log("avatar", avatar);
 
   const navigate = useNavigate();
@@ -60,7 +62,7 @@ function Navbar() {
   }, [isSuccess]);
 
   return (
-    <div className="h-16 dark:bg-[#0A0A0A] bg-white border-b dark:border-b-gray-800  border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
+    <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800  border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
       {/* Desktop Screen */}
       <div className="max-w-6xl mx-auto hidden md:flex  justify-between items-center gap-10 h-full ">
         <Link to="/">
@@ -72,7 +74,7 @@ function Navbar() {
 
         {/* User Icons And Dark Screen */}
         <div className="flex gap-5">
-          {user ? (
+          {isAuth ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar>
@@ -129,7 +131,7 @@ function Navbar() {
 
                 {/* Dashboard button for when we are instructor*/}
                 <DropdownMenuSeparator />
-                {role === "instructor" && (
+                {userdata.user.role === "instructor" && (
                   <Link to="/admin/dashboard">
                     <DropdownMenuItem className="bg-blue-500 flex justify-center font-semibold text-sm">
                       Dashboard
@@ -152,8 +154,10 @@ function Navbar() {
 
       {/* Mobile Screen */}
       <div className="md:hidden flex  items-center h-full justify-between px-4">
-        <p className="font-bold text-2xl"> E-Learning </p>
-        <MobileNavbar />
+        <Link to="/">
+          <p className="font-bold text-2xl"> E-Learning </p>
+        </Link>
+        <MobileNavbar user={userdata} />
       </div>
     </div>
   );
@@ -161,9 +165,11 @@ function Navbar() {
 
 export default Navbar;
 
-function MobileNavbar() {
-  const user = true;
-  const role = "instructor";
+function MobileNavbar({ user }) {
+  const isAuth = user?.isAuthenticated;
+  const role = user?.user?.role;
+  console.log("role", role);
+
   const navigate = useNavigate();
 
   const [LogOutUser, { data, isLoading, isSuccess, isError, error }] =
@@ -182,7 +188,7 @@ function MobileNavbar() {
 
   return (
     <>
-      {user && (
+      {isAuth && (
         <div className="flex justify-between ">
           <Sheet>
             <SheetTrigger asChild>
@@ -237,7 +243,14 @@ function MobileNavbar() {
               {role === "instructor" && (
                 <SheetFooter>
                   <SheetClose asChild>
-                    <Button type="submit">Dashboard</Button>
+                    <Button
+                      type="submit"
+                      onClick={() => {
+                        navigate("/admin/dashboard");
+                      }}
+                    >
+                      Dashboard
+                    </Button>
                   </SheetClose>
                 </SheetFooter>
               )}

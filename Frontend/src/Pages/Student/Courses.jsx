@@ -30,9 +30,9 @@ function Courses() {
   }
 
   return (
-    <div className="bg-gray-50 ">
+    <div className="bg-gray-50  dark:bg-[#141414]">
       <div className="max-w-6xl mx-auto  p-5 ">
-        <h2 className="font-bold text-center text-2xl mb-6">Our Courses</h2>
+        <h2 className="font-bold text-center text-2xl mb-6 font-mono">Our Courses</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6  mb-10">
           {courses &&
             courses.map((course, index) => (

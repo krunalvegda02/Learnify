@@ -7,9 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { useTheme } from "@/components/theme-provider";
+import { useTheme } from "@/components/ui/ThemeProvider";
 
 function DarkMode() {
+const {setTheme} = useTheme();
+;
+
   return (
     <div>
   

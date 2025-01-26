@@ -35,7 +35,7 @@ function Hero() {
             onChange={(e) => {
               setSearchQuery(e.target.value);
             }}
-            className=" flex-grow focus-visible:ring-0  rounded-l-full  px-6 py-3 placeholder-gray-400  dark:placeholder-gray-500"
+            className=" flex-grow focus-visible:ring-0  rounded-l-full  px-6 py-3 placeholder-gray-400  dark:placeholder-gray-500 dark:text-black" 
             placeholder="Search Courses..."
           ></Input>
           <Button

@@ -22,6 +22,7 @@ import {
   ProtectedRoute,
 } from "./components/ui/ProtectedRoutes";
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
+import { ThemeProvider } from "./components/ui/ThemeProvider";
 
 function App() {
   const AppRouter = createBrowserRouter([
@@ -29,7 +30,15 @@ function App() {
       path: "/",
       element: <MainLayout />,
       children: [
-        { path: "/", element: <><Hero /><Courses /></> },
+        {
+          path: "/",
+          element: (
+            <>
+              <Hero />
+              <Courses />
+            </>
+          ),
+        },
         {
           path: "login",
           element: (
@@ -93,16 +102,21 @@ function App() {
             { path: "course/create", element: <AddCourse /> },
             { path: "course/:courseId", element: <EditCourse /> },
             { path: "course/:courseId/lecture", element: <CreateLecture /> },
-            { path: "course/:courseId/lecture/:lectureId", element: <EditLecture /> },
+            {
+              path: "course/:courseId/lecture/:lectureId",
+              element: <EditLecture />,
+            },
           ],
         },
       ],
     },
   ]);
-  
+
   return (
     <>
-      <RouterProvider router={AppRouter} />
+      <ThemeProvider>
+        <RouterProvider router={AppRouter} />
+      </ThemeProvider>
     </>
   );
 }

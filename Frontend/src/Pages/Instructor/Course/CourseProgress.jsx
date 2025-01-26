@@ -10,7 +10,7 @@ import {
 import { CheckCircle2, CirclePlay } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 
 const CourseProgress = () => {
   const courseId = useParams().courseId;
@@ -52,7 +52,7 @@ const CourseProgress = () => {
     currLecture || (courseDetails.lectures && courseDetails.lectures[0]);
 
   const isLectureCompleted = (lectureID) => {
-    console.log("progreshh", progress);
+    // console.log("progreshh", progress);
     return progress.some((prog) => prog.lectureId === lectureID && prog.viewed);
   };
 
@@ -129,8 +129,8 @@ const CourseProgress = () => {
                 onClick={() => handleSelectLecture(lecture)}
                 className={`mb-3 hover:cursor-pointer transition transform ${
                   lecture._id === currLecture?._id
-                    ? "bg-gray-200"
-                    : "dark:bg-gray-800"
+                    ? "bg-gray-200 dark:bg-gray-800"
+                    : ""
                 }`}
               >
                 <CardContent className="flex items-center justify-between p-4">
