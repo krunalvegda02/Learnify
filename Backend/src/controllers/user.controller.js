@@ -125,7 +125,12 @@ const logOutUser = asyncHandler(async (req, res) => {
 const getUserProfile = asyncHandler(async (req, res) => {
   const userid = req.user._id;
 
-  const user = await User.findById(userid).select("-password -refreshToken");
+  const user = await User.findById(userid)
+    .populate({
+      path: "enrolledCourses",
+      populate: { path: "creator" }, // Nested population for `enrolledCourses.creator`
+    })
+    .select("-password -refreshToken");
   if (!user) {
     throw new ApiError(401, "User Not Found");
   }

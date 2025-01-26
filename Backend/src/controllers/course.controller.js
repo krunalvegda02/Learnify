@@ -2,7 +2,6 @@ import { Course } from "../models/Course.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { removeLecture } from "./lecture.controller.js";
 import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
 
 const createCourse = asyncHandler(async (req, res) => {
@@ -24,8 +23,43 @@ const createCourse = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, course, "Course Created Succesfully"));
 });
 
-const getPublishedCourse = asyncHandler(async (req, res) => {
+const searchCourse = asyncHandler(async (req, res) => {
+  const { query = "", categories = [], sortByPrice = "" } = req.query;
+  console.log(req.query);
   
+
+  const searchCriteria = {
+    isPublished: true,
+    $or: [
+      { title: { $regex: query, $options: "i" } },
+      { subtitle: { $regex: query, $options: "i" } },
+      { category: { $regex: query, $options: "i" } },
+    ],
+  };
+
+  //to make same category as databse category
+  if (categories.length > 0) {
+    searchCriteria.category = { $in: categories };
+  }
+
+  const sortOptions = {};
+  if (sortByPrice === "low") {
+    sortOptions.price = 1; //sort by prices in ascending order
+  } else if (sortByPrice === "high") {
+    sortOptions.price = -1; //sort by prices in descending order
+  }
+
+  let courses = []; //if i dont have courses then it passes null array otherwise courses
+  courses = await Course.find(searchCriteria)
+    .populate({ path: "creator", select: "name avatar" })
+    .sort(sortOptions);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, courses, "Seached Course Find succesfully"));
+});
+
+const getPublishedCourse = asyncHandler(async (req, res) => {
   const courses = await Course.find({ isPublished: true }).populate({
     path: "creator",
     select: "username avatar",
@@ -180,6 +214,7 @@ const togglePublishCourse = asyncHandler(async (req, res) => {
 
 export {
   createCourse,
+  searchCourse,
   getCreatorCourses,
   updateCourse,
   deleteCourse,

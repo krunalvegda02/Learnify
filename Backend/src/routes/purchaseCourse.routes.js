@@ -14,7 +14,9 @@ router
   .route("/checkout/create-checkout-session")
   .post(isAuthenticated, createCheckoutSession);
 router.route("/webhook").post(raw({ type: "applicaiton/json" }), stripeWebhook);
+
 router
   .route("/course/:courseId/detail-with-status")
   .get(isAuthenticated,getCourseDetailWithPurchaseStatus);
-router.route("/").get(isAuthenticated,getAllPurchasedCourse);
+
+  router.route("/").get(isAuthenticated,getAllPurchasedCourse);

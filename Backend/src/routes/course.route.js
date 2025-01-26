@@ -6,15 +6,16 @@ import {
   getCourseById,
   getCreatorCourses,
   getPublishedCourse,
+  searchCourse,
   togglePublishCourse,
   updateCourse,
 } from "../controllers/course.controller.js";
 import upload from "../middlewares/multer.middleware.js";
 
-
 const courseRouter = Router();
 courseRouter.use(isAuthenticated);
 
+courseRouter.route("/search").get(searchCourse);
 courseRouter.route("/").post(createCourse);
 courseRouter.route("/").get(getCreatorCourses);
 courseRouter
