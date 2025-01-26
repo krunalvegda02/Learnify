@@ -14,11 +14,11 @@ const PurchaseCourseProtectedRoute = ({ children }) => {
     );
   }
 
-  if (!data?.purchased) {
-    return <Navigate to={`/details/${courseId}`} />;
-  }
-
-  return children;
+  return data?.purchased ? (
+    children
+  ) : (
+    <Navigate to={`/details/${courseId}`} />
+  );
 };
 
 export default PurchaseCourseProtectedRoute;

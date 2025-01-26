@@ -23,14 +23,15 @@ export const AuthenticatedUser = ({ children }) => {
 };
 
 export const AdminRoute = ({ children }) => {
-    const { user, isAuthenticated } = useSelector((state) => state.auth);
-  
-    if (!isAuthenticated) {
-      return <Navigate to="/login" />;
-    }
-    if (user?.role !== "instructor") {
-      return <Navigate to="/" />;
-    }
-  
-    return children;
-  };
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  if (user?.role !== "instructor") {
+    return <Navigate to="/" />;
+  }
+
+  return children;
+};

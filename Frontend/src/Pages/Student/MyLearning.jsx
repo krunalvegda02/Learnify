@@ -7,7 +7,7 @@ function MyLearning() {
   const MyLearningCourses = data?.data.enrolledCourses || [];
 
   return (
-    <div className="max-w-6xl mx-auto my-24 px-4 md:px-0">
+    <div className="max-w-6xl mx-auto my-24 px-4 md:px-4 ">
       <h1 className="font-semibold  text-2xl">My Learning</h1>
       <div className="my-5">
         {isLoading ? (

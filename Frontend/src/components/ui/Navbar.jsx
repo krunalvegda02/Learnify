@@ -1,4 +1,4 @@
-import { LogOut, LucideLogOut, Menu, School } from "lucide-react";
+import { LogOut, LucideLogOut, Menu, School, User2 } from "lucide-react";
 import React, { useEffect } from "react";
 import DarkMode from "@/DarkMode";
 import { Button } from "@/components/ui/button";
@@ -36,40 +36,46 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 import { Link, useNavigate } from "react-router-dom";
 import { useLogOutUserMutation } from "@/Redux/Features/Api/authApi";
 import { toast } from "sonner";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Logo from "../Logo";
+import { LogoutUser } from "@/Redux/Features/authSlice";
+import avatarWeb from "../../assets/user.png";
 
 function Navbar() {
   const userdata = useSelector((state) => state.auth);
   const isAuth = userdata?.isAuthenticated;
   const role = userdata?.user?.role;
-  // console.log("user", userdata);
-  const avatar = userdata.user?.avatar;
-  // console.log("avatar", avatar);
 
+  const avatar = userdata.user?.avatar || null;
+  console.log("avatar", avatar);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [LogOutUser, { data, isSuccess }] = useLogOutUserMutation();
 
   const logOutHandler = () => {
+    dispatch(LogoutUser);
     LogOutUser();
   };
 
   useEffect(() => {
     if (isSuccess) {
       toast.success(data?.message || "Logout  Succesfully");
-      navigate("/login");
+      // navigate("/login");
     }
   }, [isSuccess]);
 
   return (
     <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800  border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
       {/* Desktop Screen */}
-      <div className="max-w-6xl mx-auto hidden md:flex  justify-between items-center gap-10 h-full ">
+      <div className="max-w-6xl mx-auto  hidden md:flex  justify-between items-center gap-10 h-full px-3">
         <Link to="/">
           <div className="flex items-center gap-2">
-           <Logo/>
-            <h1 className="hidden md:block font-se text-2xl font-serif"> Learnify </h1>
+          <Logo/>
+            <h1 className="hidden md:block font-se text-2xl font-serif">
+              Learnify
+            </h1>
           </div>
         </Link>
 
@@ -79,13 +85,7 @@ function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar>
-                  <AvatarImage
-                    src={
-                      avatar ||
-                      "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
-                    }
-                    alt="@shadcn"
-                  />
+                  <AvatarImage src={avatar || avatarWeb} alt="@shadcn" />
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
@@ -169,7 +169,7 @@ export default Navbar;
 function MobileNavbar({ user }) {
   const isAuth = user?.isAuthenticated;
   const role = user?.user?.role;
-  console.log("role", role);
+  // console.log("role", role);
 
   const navigate = useNavigate();
 
@@ -203,7 +203,7 @@ function MobileNavbar({ user }) {
             <SheetContent className="flex flex-col">
               <SheetHeader className="flex flex-row items-center justify-between mt-2">
                 <SheetTitle className="font-semibold font-serif text-2xl">
-             Learnify
+                  Learnify
                 </SheetTitle>
                 <DarkMode />
               </SheetHeader>

@@ -13,18 +13,20 @@ import {
 import upload from "../middlewares/multer.middleware.js";
 
 const courseRouter = Router();
-courseRouter.use(isAuthenticated);
+// courseRouter.use(isAuthenticated);
 
-courseRouter.route("/search").get(searchCourse);
-courseRouter.route("/").post(createCourse);
-courseRouter.route("/").get(getCreatorCourses);
+courseRouter.route("/search").get(isAuthenticated, searchCourse);
+courseRouter.route("/").post(isAuthenticated, createCourse);
+courseRouter.route("/").get(isAuthenticated, getCreatorCourses);
 courseRouter
   .route("/:courseId")
-  .patch(upload.single("thumbnailFile"), updateCourse);
-courseRouter.route("/:courseId").get(getCourseById);
-courseRouter.route("/:courseId").delete(deleteCourse);
+  .patch(upload.single("thumbnailFile"), isAuthenticated, updateCourse);
+courseRouter.route("/:courseId").get(isAuthenticated, getCourseById);
+courseRouter.route("/:courseId").delete(isAuthenticated, deleteCourse);
 courseRouter.route("/c/publish-courses").get(getPublishedCourse);
 
-courseRouter.route("/:courseId/publish").patch(togglePublishCourse);
+courseRouter
+  .route("/:courseId/publish")
+  .patch(isAuthenticated, togglePublishCourse);
 
 export default courseRouter;
