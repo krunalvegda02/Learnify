@@ -22,6 +22,7 @@ import {
 import { Loader, Loader2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  useDeleteCourseMutation,
   useGetCourseByIdQuery,
   usePublishCourseMutation,
   useUpdateCourseMutation,
@@ -144,7 +145,27 @@ function CourseTab() {
     }
   };
 
-  if (courseisLoading) {
+  const [deleteCourse, { isLoading: deleteIsLoading }] =
+    useDeleteCourseMutation();
+
+  const deleteCourseHandler = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this course?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const response = await deleteCourse(courseId);
+      if (response.data) {
+        toast.success("Course deleted successfully.");
+        navigate("/admin/course");
+      }
+    } catch (err) {
+      toast.error(err?.message || "Error deleting course.");
+    }
+  };
+
+  if (courseisLoading || deleteIsLoading) {
     return (
       <div className="flex justify-center items-center min-h-[75vh]">
         <Loader2 className="h-5 w-5 animate-spin" />
@@ -179,7 +200,7 @@ function CourseTab() {
               "Publish"
             )}
           </Button>
-          <Button>Remove Course</Button>
+          <Button onClick={deleteCourseHandler}>Remove Course</Button>
         </div>
       </CardHeader>
 
@@ -221,34 +242,28 @@ function CourseTab() {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Category</SelectLabel>
-                    <SelectItem value="Next js">Next js</SelectItem>
-                    <SelectItem value="React js">React js</SelectItem>
-                    <SelectItem value="MongoDB">MongoDB</SelectItem>
-                    <SelectItem value="MySQL">MySQL</SelectItem>
-                    <SelectItem value="MERN Stack Development">
-                      MERN Stack Development
-                    </SelectItem>
-                    <SelectItem value="Frontend Development">
+                    <SelectItem value="reactjs">ReactJS</SelectItem>
+                    <SelectItem value="nextjs">NextJS</SelectItem>
+                    <SelectItem value="data science">Data Science</SelectItem>
+                    <SelectItem value="frontend development">
                       Frontend Development
                     </SelectItem>
-                    <SelectItem value="Backend Developent">
-                      Backend Developent
+                    <SelectItem value="backend development">
+                      Backend Development
                     </SelectItem>
-                    <SelectItem value="Data Science">Data Science</SelectItem>
-                    <SelectItem value="Web Development">
-                      Web Development
+                    <SelectItem value="fullstack development">
+                      Fullstack Development
                     </SelectItem>
-                    <SelectItem value="App Development">
-                      App Development
+                    <SelectItem value="mern stack development">
+                      MERN Stack Development
                     </SelectItem>
-                    <SelectItem value="Machine Learning">
-                      Machine Learning
+                    <SelectItem value="javascript">Javascript</SelectItem>
+                    <SelectItem value="python">Python</SelectItem>
+                    <SelectItem value="docker">Docker</SelectItem>
+                    <SelectItem value="mongodb">MongoDB</SelectItem>
+                    <SelectItem value="php development">
+                      PHP Developer
                     </SelectItem>
-                    <SelectItem value="Python">Python</SelectItem>
-                    <SelectItem value="Docker">Docker</SelectItem>
-                    <SelectItem value="Java">Java</SelectItem>
-                    <SelectItem value="C++">C++</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

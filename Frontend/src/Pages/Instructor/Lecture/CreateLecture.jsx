@@ -38,14 +38,14 @@ function CreateLecture() {
   useEffect(() => {
     if (isSuccess) {
       refetch();
+      setLecturetitle("");
       toast.success(data?.message || "Lecture Created Successfully");
     }
 
-    if (error) {c
+    if (error) {
+      c;
       toast.error("Error Creating Lecture");
     }
-
-
   }, [isSuccess, error]);
 
   return (

@@ -2,7 +2,12 @@ import { Course } from "../models/Course.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-import { deleteMediaFromCloudinary, uploadMedia } from "../utils/cloudinary.js";
+import {
+  deleteLectureFromCloudinary,
+  deleteMediaFromCloudinary,
+  uploadMedia,
+} from "../utils/cloudinary.js";
+import { Lecture } from "../models/lecture.model.js";
 
 const createCourse = asyncHandler(async (req, res) => {
   const { title, category } = req.body;
@@ -24,9 +29,8 @@ const createCourse = asyncHandler(async (req, res) => {
 });
 
 const searchCourse = asyncHandler(async (req, res) => {
-  const { query = "", categories = [], sortByPrice = "" } = req.query;
+  const { query = "", categories = "", sortByPrice = "" } = req.query;
   console.log(req.query);
-  
 
   const searchCriteria = {
     isPublished: true,
@@ -38,8 +42,13 @@ const searchCourse = asyncHandler(async (req, res) => {
   };
 
   //to make same category as databse category
-  if (categories.length > 0) {
-    searchCriteria.category = { $in: categories };
+  const categoryArray = categories
+    .split(",")
+    .map((cat) => cat.trim())
+    .filter((cat) => cat.length > 0); // Filter out empty strings
+
+  if (categoryArray.length > 0) {
+    searchCriteria.category = { $in: categoryArray };
   }
 
   const sortOptions = {};
@@ -157,27 +166,54 @@ const updateCourse = asyncHandler(async (req, res) => {
 const deleteCourse = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
 
-  const deleteCourse = await Course.findById(courseId);
+  // Deleting course from  course model
+  const deletedCourse = await Course.findByIdAndDelete(courseId);
   if (!deleteCourse) {
     throw new ApiError(404, "Error Deleting Course");
   }
 
-  if (deleteCourse.thumbnail) {
-    const thumbnailId = deleteCourse.thumbnail.split("/").pop().split(".")[0];
-    console.log("thumbnailId", thumbnailId);
-
-    await deleteMediaFromCloudinary(thumbnailId);
+  // deleting course Thumbnail
+  try {
+    if (deleteCourse.thumbnail) {
+      const thumbnailId = deleteCourse.thumbnail.split("/").pop().split(".")[0];
+      console.log("thumbnailId", thumbnailId);
+      await deleteMediaFromCloudinary(thumbnailId);
+    }
+  } catch (error) {
+    throw new ApiError(
+      500,
+      `Error Deleting Video From Cloudinary:: ${error.message}  `
+    );
   }
 
-  // const courseLectures = deleteCourse.lectures;
-  // const deleteLectures = await courseLectures.map((lectureId) =>
-  //   removeLecture({ params: { lectureId } }, res)
-  // );
+  //Deleting course lectures from lectures Model
+  const lectures = await Lecture.find({ courseId: courseId });
+  // deleting Lecture Video from CLoudnary
+  try {
+    await Promise.all(
+      lectures.map(async (lecture) => {
+        if (lecture.publicId) {
+          await deleteLectureFromCloudinary(lecture.publicId);
+        }
+      })
+    );
+  } catch (error) {
+    throw new ApiError(
+      500,
+      `Error Deleting LectureVideo From Cloudinary:: ${error.message}`
+    );
+  }
+
+  await Lecture.deleteMany({ courseId: courseId });
 
   return res
     .status(200)
     .json(
-      new ApiResponse(200, { deleteLectures }, "Course Deleted Succesfully")
+      new ApiResponse(
+        200,
+        { deletedCourse, lectures },
+        "Course Deleted Succesfully"
+      )
     );
 });
 

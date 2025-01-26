@@ -17,7 +17,7 @@ const createLecture = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Lecture title is required to create Lecture");
   }
 
-  const lecture = await Lecture.create({ title });
+  const lecture = await Lecture.create({ title, courseId });
 
   const course = await Course.findById(courseId);
   if (course) {

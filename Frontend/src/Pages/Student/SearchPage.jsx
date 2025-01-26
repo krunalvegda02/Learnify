@@ -22,7 +22,9 @@ const SearchPage = () => {
     sortByPrice: sortByPrice,
   });
 
-  const isEmpty = !isLoading && data?.data.length === 0;
+  const isEmpty = !isLoading && data.data?.length === 0;
+  console.log(isEmpty);
+  
   console.log("data", data);
 
   const handleFilterChange = (categories, price) => {
@@ -54,7 +56,7 @@ const SearchPage = () => {
           ) : isEmpty ? (
             <CourseNotFound />
           ) : (
-            data?.data.map((course) => <SearchResult course={course} />)
+            data.data?.map((course) => <SearchResult course={course} />)
           )}
         </div>
       </div>

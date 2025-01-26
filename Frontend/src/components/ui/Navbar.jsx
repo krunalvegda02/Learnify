@@ -62,7 +62,7 @@ function Navbar() {
   useEffect(() => {
     if (isSuccess) {
       toast.success(data?.message || "Logout  Succesfully");
-      // navigate("/login");
+      window.location.reload();
     }
   }, [isSuccess]);
 
@@ -72,7 +72,7 @@ function Navbar() {
       <div className="max-w-6xl mx-auto  hidden md:flex  justify-between items-center gap-10 h-full px-3">
         <Link to="/">
           <div className="flex items-center gap-2">
-          <Logo/>
+            <Logo />
             <h1 className="hidden md:block font-se text-2xl font-serif">
               Learnify
             </h1>

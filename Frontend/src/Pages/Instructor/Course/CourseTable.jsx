@@ -29,7 +29,7 @@ const CourseTable = () => {
       </Button>
       <Table>
         <TableCaption>
-          <p className="text-base text-black">
+          <p className="text-base text-black dark:text-gray-500 ">
             {data.data.length !== 0 && "Your Courses"}
           </p>
         </TableCaption>
@@ -37,8 +37,8 @@ const CourseTable = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Title </TableHead>
-              <TableHead className="w-[130px]">Status</TableHead>
               <TableHead className="w-[130px]">Price</TableHead>
+              <TableHead className="w-[130px]">Status</TableHead>
               <TableHead className="w-[180px] text-center">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -63,7 +63,7 @@ const CourseTable = () => {
                   <p className="truncate text-base">{course.title}</p>
                 </TableCell>
                 <TableCell className="font-medium">
-                  {course.price || "NA"}
+                  {`${course.price} ₹` || "NA"}
                 </TableCell>
                 <TableCell>
                   {course.isPublished ? (

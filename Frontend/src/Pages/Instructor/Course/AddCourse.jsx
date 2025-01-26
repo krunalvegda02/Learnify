@@ -75,7 +75,7 @@ function AddCourse() {
               <SelectGroup>
                 <SelectLabel>Category</SelectLabel>
                 <SelectItem value="reactjs">ReactJS</SelectItem>
-                <SelectItem value="Nextjs">NextJS</SelectItem>
+                <SelectItem value="nextjs">NextJS</SelectItem>
                 <SelectItem value="data science">Data Science</SelectItem>
                 <SelectItem value="frontend development">
                   Frontend Development
@@ -93,7 +93,7 @@ function AddCourse() {
                 <SelectItem value="python">Python</SelectItem>
                 <SelectItem value="docker">Docker</SelectItem>
                 <SelectItem value="mongodb">MongoDB</SelectItem>
-                <SelectItem value="php development">PHP Developer++</SelectItem>
+                <SelectItem value="php development">PHP Developer</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>

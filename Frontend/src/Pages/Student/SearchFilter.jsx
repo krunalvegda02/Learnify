@@ -22,7 +22,7 @@ const category = [
   },
 
   {
-    id: "data Science",
+    id: "data science",
     label: "Data Science",
   },
 
@@ -73,7 +73,7 @@ const category = [
 ];
 
 const SeachFilter = ({ handleFilterChange }) => {
-  console.log(handleFilterChange);
+  // console.log("handleFilterchange", handleFilterChange);
 
   const [sortByPrice, setSortByPrice] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
