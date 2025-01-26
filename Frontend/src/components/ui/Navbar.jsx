@@ -37,12 +37,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLogOutUserMutation } from "@/Redux/Features/Api/authApi";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
+import Logo from "../Logo";
 
 function Navbar() {
   const userdata = useSelector((state) => state.auth);
   const isAuth = userdata?.isAuthenticated;
   const role = userdata?.user?.role;
-  console.log("user", userdata);
+  // console.log("user", userdata);
   const avatar = userdata.user?.avatar;
   // console.log("avatar", avatar);
 
@@ -67,8 +68,8 @@ function Navbar() {
       <div className="max-w-6xl mx-auto hidden md:flex  justify-between items-center gap-10 h-full ">
         <Link to="/">
           <div className="flex items-center gap-2">
-            <School size={30} />
-            <h1 className="hidden md:block font-bold text-2xl"> E-Learning </h1>
+           <Logo/>
+            <h1 className="hidden md:block font-se text-2xl font-serif"> Learnify </h1>
           </div>
         </Link>
 
@@ -131,7 +132,7 @@ function Navbar() {
 
                 {/* Dashboard button for when we are instructor*/}
                 <DropdownMenuSeparator />
-                {userdata.user.role === "instructor" && (
+                {role === "instructor" && (
                   <Link to="/admin/dashboard">
                     <DropdownMenuItem className="bg-blue-500 flex justify-center font-semibold text-sm">
                       Dashboard
@@ -155,7 +156,7 @@ function Navbar() {
       {/* Mobile Screen */}
       <div className="md:hidden flex  items-center h-full justify-between px-4">
         <Link to="/">
-          <p className="font-bold text-2xl"> E-Learning </p>
+          <p className="font-bold text-2xl font-serif"> Learnify</p>
         </Link>
         <MobileNavbar user={userdata} />
       </div>
@@ -201,8 +202,8 @@ function MobileNavbar({ user }) {
             </SheetTrigger>
             <SheetContent className="flex flex-col">
               <SheetHeader className="flex flex-row items-center justify-between mt-2">
-                <SheetTitle className="font-semibold text-2xl">
-                  E-Learning
+                <SheetTitle className="font-semibold font-serif text-2xl">
+             Learnify
                 </SheetTitle>
                 <DarkMode />
               </SheetHeader>

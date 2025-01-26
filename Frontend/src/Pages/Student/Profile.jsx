@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Loader2 } from "lucide-react";
+import { BookOpen, Edit2Icon, Loader2, UserPen } from "lucide-react";
 import Course from "./Course";
 import {
   useLoadUserQuery,
@@ -32,8 +32,7 @@ function Profile() {
     updateUser,
     { data: updateUserData, isLoading: formLoading, error, isSuccess, isError },
   ] = useUpdateUserMutation();
-console.log("data", data);
-
+  console.log("data", data);
 
   // Update profile
   const [username, setUsername] = useState("");
@@ -71,7 +70,12 @@ console.log("data", data);
 
   return (
     <div className="my-24 max-w-5xl  mx-auto px-4">
-      <h1 className="font-bold text-2xl text-center sm:text-left ">Profile</h1>
+      <div className="flex gap-2 items-center">
+        <UserPen />
+        <h1 className="font-semibold text-2xl text-center sm:text-left ">
+          Your Profile
+        </h1>
+      </div>
 
       <div className="my-5">
         {isLoading ? (
@@ -117,7 +121,9 @@ console.log("data", data);
               <div>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button size="sm">Edit Profile</Button>
+                    <Button size="sm" className="text-lg">
+                      Edit
+                    </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
