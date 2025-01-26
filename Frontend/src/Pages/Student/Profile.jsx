@@ -26,11 +26,14 @@ function Profile() {
   // Profile Fetch PArt
   const { data, isLoading, refetch } = useLoadUserQuery();
   const user = data?.data || {};
+  console.log(user);
 
   const [
     updateUser,
     { data: updateUserData, isLoading: formLoading, error, isSuccess, isError },
   ] = useUpdateUserMutation();
+console.log("data", data);
+
 
   // Update profile
   const [username, setUsername] = useState("");
@@ -65,6 +68,7 @@ function Profile() {
   useEffect(() => {
     refetch();
   }, []);
+
   return (
     <div className="my-24 max-w-5xl  mx-auto px-4">
       <h1 className="font-bold text-2xl text-center sm:text-left ">Profile</h1>
@@ -81,7 +85,7 @@ function Profile() {
                     user?.avatar ||
                     "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg"
                   }
-                  alt="@shadcn"
+                  alt="User Avatar"
                 />
               </Avatar>
             </div>
@@ -186,8 +190,8 @@ function Profile() {
                 </h1>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-                {user.enrolledCourses.map((course, index) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 ">
+                {user.enrolledCourses.map((course) => (
                   <Course course={course} key={course._id} />
                 ))}
               </div>
