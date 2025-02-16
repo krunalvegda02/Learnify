@@ -13,8 +13,8 @@ const SearchPage = () => {
 
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query");
+console.log("query", query);
 
-  const courseId = "feskjnjsd";
 
   const { data, isLoading } = useSearchCourseQuery({
     query: query,
@@ -23,9 +23,9 @@ const SearchPage = () => {
   });
 
   const isEmpty = !isLoading && data.data?.length === 0;
-  console.log(isEmpty);
+  // console.log(isEmpty);
   
-  console.log("data", data);
+  // console.log("data", data);
 
   const handleFilterChange = (categories, price) => {
     setSelectedCategories(categories);

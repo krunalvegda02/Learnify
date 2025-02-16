@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetPurchasedCourseQuery } from "@/Redux/Features/Api/purchaseApi";
+import { Loader2, LucideLoader } from "lucide-react";
 import React from "react";
 import {
   CartesianGrid,
@@ -15,21 +16,35 @@ function Dashboard() {
   const { data, isSuccess, isError, error, isLoading } =
     useGetPurchasedCourseQuery();
 
-  console.log("data", data);
+  // console.log("data", data);
 
   if (isLoading) {
-    return "error";
+    return (
+      <div className="flex justify-center h-screen ">
+        <LucideLoader className="animate-spin" />
+      </div>
+    );
   }
+
   if (isError) {
     console.log(error);
-    return "or";
+    return (
+      <div>
+        <p className="text-red-500 text-2xl flex justify-center">
+          Some Error Occured !
+        </p>
+      </div>
+    );
   }
 
   const { purchasedCourse } = data || [];
-  const courseData = purchasedCourse.map((course) => ({
-    name: course.courseId.title,
-    price: course.courseId.price,
-  }));
+  const courseData = purchasedCourse
+    .filter((course) => course.courseId !== null)
+    .map((course) => ({
+      name: course.courseId?.title,
+      price: course.courseId?.price,
+    }));
+  console.log("coyrsedata", purchasedCourse);
 
   const revenue = purchasedCourse.reduce(
     (acc, element) => acc + (element.amount || 0),
@@ -52,7 +67,7 @@ function Dashboard() {
           <CardTitle>Total Revenue</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-3xl font-bold text-blue-600">{revenue}</p>
+          <p className="text-3xl font-bold text-blue-600">{revenue} ₹</p>
         </CardContent>
       </Card>
       {/* Course Prices Card */}
