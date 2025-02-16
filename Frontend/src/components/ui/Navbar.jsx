@@ -88,8 +88,8 @@ function Navbar() {
                   <AvatarImage src={avatar || avatarWeb} alt="@shadcn" />
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuContent className="w-56 ">
+                <DropdownMenuLabel> <p className="text-lg">My Account</p> </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   {/* My Learning BUtton */}

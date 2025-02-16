@@ -16,7 +16,7 @@ function Hero() {
   };
 
   return (
-    <div className="relative bg-gradient-to-r from-violet-500 to bg-violet-600 dark:from-gray-800  dark:to-gray-900 py-20 px-4 text-center">
+    <div className="relative bg-gradient-to-r from-violet-400 to bg-violet-700 dark:from-violet-700  dark:to-gray-900 py-20 px-4 text-center">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-white text-4xl font-semibold mb-4">
           Find the Best Couses for You

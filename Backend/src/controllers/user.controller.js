@@ -144,7 +144,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   const userid = req.user._id;
   const { username } = req.body;
   const avatarFile = req.file;
-  // console.log("avatar", req.file);
+  console.log("avatar", req.file);
 
   const user = await User.findById(userid);
   if (!user) {

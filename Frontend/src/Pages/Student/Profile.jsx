@@ -121,7 +121,7 @@ function Profile() {
               <div>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button size="sm" className="text-lg">
+                    <Button size="sm" className="text-xl px-8">
                       Edit
                     </Button>
                   </DialogTrigger>
